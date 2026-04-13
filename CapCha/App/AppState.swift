@@ -13,11 +13,16 @@ final class AppState: ObservableObject {
     private var sessionTracker: SessionTracker?
     private var reEnableTimer: Timer?
     private var permissionPollTimer: Timer?
+    private var saveTimer: Timer?
     private var cancellables = Set<AnyCancellable>()
 
     init() {
+        // Restore persisted data
         collection = StorageManager.shared.loadCollection()
         recentDrops = Array(collection.suffix(5).reversed())
+
+        let stats = StorageManager.shared.loadStats()
+        keystrokeMonitor.totalCount = stats.totalKeystrokes
 
         // Forward keystroke count changes to AppState for SwiftUI binding
         keystrokeMonitor.$totalCount
@@ -25,6 +30,11 @@ final class AppState: ObservableObject {
             .assign(to: &$keystrokeCount)
 
         tryStartMonitoring()
+
+        // Auto-save stats every 60 seconds
+        saveTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { [weak self] _ in
+            self?.saveStats()
+        }
     }
 
     func tryStartMonitoring() {
@@ -86,11 +96,18 @@ final class AppState: ObservableObject {
         }
 
         StorageManager.shared.saveCollection(collection)
+        saveStats()
         DropNotificationManager.shared.show(keycap: keycap)
+    }
+
+    private func saveStats() {
+        let stats = UserStats(totalKeystrokes: keystrokeMonitor.totalCount)
+        StorageManager.shared.saveStats(stats)
     }
 
     func saveOnExit() {
         StorageManager.shared.saveCollection(collection)
+        saveStats()
         keystrokeMonitor.stop()
     }
 }
