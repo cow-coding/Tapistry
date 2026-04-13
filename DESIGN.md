@@ -1,8 +1,8 @@
-# TypeCollect - Architecture Design Document
+# CapCha - Architecture Design Document
 
 ## 1. Overview
 
-**TypeCollect**은 macOS 메뉴바 상주 앱으로, 일상적인 타이핑(개발, 업무 등)을 하면 자동으로 가상 키캡 아이템이 수집되는 게임입니다.
+**CapCha**은 macOS 메뉴바 상주 앱으로, 일상적인 타이핑(개발, 업무 등)을 하면 자동으로 가상 키캡 아이템이 수집되는 게임입니다.
 
 Steam의 "Banana" 클리커 게임에서 영감을 받았지만, 클릭 대신 **평소 타이핑만으로** 아이템을 모을 수 있어 업무와 병행이 가능합니다.
 
@@ -30,11 +30,11 @@ Steam의 "Banana" 클리커 게임에서 영감을 받았지만, 클릭 대신 *
 ## 3. Project Structure
 
 ```
-TypeCollect/
-├── TypeCollect.xcodeproj
-├── TypeCollect/
+CapCha/
+├── CapCha.xcodeproj
+├── CapCha/
 │   ├── App/
-│   │   ├── TypeCollectApp.swift              # @main, MenuBarExtra 씬
+│   │   ├── CapChaApp.swift              # @main, MenuBarExtra 씬
 │   │   ├── AppDelegate.swift                 # NSApplicationDelegate 라이프사이클
 │   │   ├── AppState.swift                    # 중앙 상태 관리 (ObservableObject)
 │   │   └── Info.plist                        # LSUIElement = YES
@@ -99,7 +99,7 @@ TypeCollect/
 │       ├── Constants.swift                   # 앱 상수
 │       └── DateHelpers.swift                 # 날짜 유틸
 │
-└── TypeCollectTests/
+└── CapChaTests/
     ├── DropEngineTests.swift
     ├── SessionTrackerTests.swift
     └── KeycapCatalogTests.swift
@@ -272,7 +272,7 @@ struct UserStats: Codable {
 
 ```
 ┌──────────────────────────────────┐
-│  ⌨️ TypeCollect                  │
+│  ⌨️ CapCha                  │
 ├──────────────────────────────────┤
 │                                  │
 │  Today: 3,247 keystrokes         │
@@ -291,7 +291,7 @@ struct UserStats: Codable {
 │  [Open Collection]  [Settings]   │
 │                                  │
 │  ─────────────────────────────── │
-│  [Quit TypeCollect]              │
+│  [Quit CapCha]              │
 └──────────────────────────────────┘
 ```
 
@@ -595,7 +595,7 @@ enum KeyboardLayout: String, Codable {
 
 ## 11. Persistence
 
-- 저장 위치: `~/Library/Application Support/TypeCollect/`
+- 저장 위치: `~/Library/Application Support/CapCha/`
 - 파일: `collection.json`, `stats.json`, `settings.json`
 - 저장 시점: 드롭 발생 시, 60초 주기, 앱 종료 시 (`applicationWillTerminate`)
 - 매 키스트로크마다 저장하지 않음 (성능 보호)
