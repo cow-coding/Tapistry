@@ -70,7 +70,7 @@ struct MenuBarContentView: View {
                         .foregroundColor(.secondary)
                         .padding(.bottom, 2)
 
-                    ForEach(appState.recentDrops.prefix(5)) { drop in
+                    ForEach(appState.recentDrops.prefix(6)) { drop in
                         HStack(spacing: 8) {
                             Circle()
                                 .fill(drop.keycap.rarity.color)
@@ -78,9 +78,13 @@ struct MenuBarContentView: View {
                             Text(drop.keycap.name)
                                 .font(.system(size: 12))
                             Spacer()
-                            Text(drop.keycap.rarity.displayName)
-                                .font(.system(size: 10))
-                                .foregroundColor(drop.keycap.rarity.color)
+                            if drop.keycap.rarity.isRainbow {
+                                RainbowText(drop.keycap.rarity.displayName, font: .system(size: 10, weight: .bold))
+                            } else {
+                                Text(drop.keycap.rarity.displayName)
+                                    .font(.system(size: 10))
+                                    .foregroundColor(drop.keycap.rarity.color)
+                            }
                         }
                     }
                 }

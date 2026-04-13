@@ -21,9 +21,13 @@ struct DropBubbleContent: View {
                     .foregroundColor(.secondary)
                 Text(keycap.name)
                     .font(.system(size: 13, weight: .semibold))
-                Text(keycap.rarity.displayName)
-                    .font(.system(size: 11, weight: .bold))
-                    .foregroundColor(keycap.rarity.color)
+                if keycap.rarity.isRainbow {
+                    RainbowText(keycap.rarity.displayName)
+                } else {
+                    Text(keycap.rarity.displayName)
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundColor(keycap.rarity.color)
+                }
             }
         }
         .padding(.horizontal, 14)

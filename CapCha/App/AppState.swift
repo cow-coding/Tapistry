@@ -19,7 +19,7 @@ final class AppState: ObservableObject {
     init() {
         // Restore persisted data
         collection = StorageManager.shared.loadCollection()
-        recentDrops = Array(collection.suffix(5).reversed())
+        recentDrops = Array(collection.suffix(6).reversed())
 
         let stats = StorageManager.shared.loadStats()
         keystrokeMonitor.totalCount = stats.totalKeystrokes
@@ -91,8 +91,8 @@ final class AppState: ObservableObject {
 
         collection.append(collected)
         recentDrops.insert(collected, at: 0)
-        if recentDrops.count > 5 {
-            recentDrops = Array(recentDrops.prefix(5))
+        if recentDrops.count > 6 {
+            recentDrops = Array(recentDrops.prefix(6))
         }
 
         StorageManager.shared.saveCollection(collection)

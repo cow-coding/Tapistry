@@ -41,6 +41,9 @@ struct KeycapCatalog {
         // MARK: - Legendary (2)
         Keycap(id: "artisan-galaxy-l01", name: "Galaxy Resin", rarity: .legendary, legendCharacter: "Space", primaryColor: "#191970", setName: "Artisan Collection"),
         Keycap(id: "milestone-million-l02", name: "The Millionaire", rarity: .legendary, legendCharacter: "Enter", primaryColor: "#FFD700", setName: "Milestone Specials"),
+
+        // MARK: - Eternal (1)
+        Keycap(id: "eternal-prisma-et01", name: "Prismatic Core", rarity: .eternal, legendCharacter: "★", primaryColor: "#FF69B4", setName: "Eternal Collection"),
     ]
 
     static func keycaps(for rarity: Rarity) -> [Keycap] {
