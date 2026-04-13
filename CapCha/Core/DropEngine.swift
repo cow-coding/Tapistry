@@ -1,8 +1,8 @@
 import Foundation
 
 struct DropEngine {
-    /// Drop chance per keystroke (0.6% ≈ ~30 drops/day at 5,000 keystrokes)
-    static let dropChance: Double = 0.006
+    /// Drop chance per keystroke (0.25% ≈ ~12-20 drops/day at 5,000-8,000 keystrokes)
+    static let dropChance: Double = 0.0025
 
     /// Determine whether a drop occurs
     static func shouldDrop() -> Bool {

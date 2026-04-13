@@ -11,6 +11,7 @@ struct KeycapCardView: View {
             KeycapShapeView(
                 primaryColor: keycap.primaryColor,
                 legendCharacter: keycap.legendCharacter,
+                rarity: keycap.rarity,
                 isCollected: isCollected,
                 size: 80
             )

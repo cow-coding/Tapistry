@@ -8,21 +8,13 @@ struct KeycapDetailView: View {
     var body: some View {
         VStack(spacing: 20) {
             // Keycap preview
-            ZStack {
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(collected != nil ? Color(hex: keycap.primaryColor) : Color.gray.opacity(0.3))
-                    .frame(width: 120, height: 100)
-
-                if collected != nil {
-                    Text(keycap.legendCharacter)
-                        .font(.system(size: 40, weight: .bold, design: .monospaced))
-                        .foregroundColor(DropBubbleContent.legendColor(for: keycap.primaryColor))
-                } else {
-                    Image(systemName: "lock.fill")
-                        .font(.system(size: 32))
-                        .foregroundColor(.gray.opacity(0.5))
-                }
-            }
+            KeycapShapeView(
+                primaryColor: keycap.primaryColor,
+                legendCharacter: keycap.legendCharacter,
+                rarity: keycap.rarity,
+                isCollected: collected != nil,
+                size: 140
+            )
 
             // Info
             VStack(spacing: 8) {
