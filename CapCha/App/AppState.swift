@@ -34,6 +34,7 @@ final class AppState: ObservableObject {
     private var sessionTracker: SessionTracker?
     private var savedPityCount: Int = 0
     private var lastKnownTotal: Int = 0
+    private var currentDay: String = ""
     private var reEnableTimer: Timer?
     private var permissionPollTimer: Timer?
     private var saveTimer: Timer?
@@ -56,6 +57,7 @@ final class AppState: ObservableObject {
 
         // Restore today's keystrokes (reset if date changed)
         let today = Self.todayString()
+        currentDay = today
         if stats.todayDate == today {
             todayKeystrokeCount = stats.todayKeystrokes
         } else {
@@ -68,11 +70,19 @@ final class AppState: ObservableObject {
             .receive(on: DispatchQueue.main)
             .assign(to: &$keystrokeCount)
 
-        // Track today's keystrokes separately
+        // Track today's keystrokes separately with midnight rollover
         keystrokeMonitor.$totalCount
             .receive(on: DispatchQueue.main)
             .sink { [weak self] newTotal in
                 guard let self = self else { return }
+
+                // Check for midnight rollover
+                let today = Self.todayString()
+                if today != self.currentDay {
+                    self.todayKeystrokeCount = 0
+                    self.currentDay = today
+                }
+
                 let delta = newTotal - self.lastKnownTotal
                 if delta > 0 {
                     self.todayKeystrokeCount += delta

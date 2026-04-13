@@ -21,8 +21,9 @@ final class PermissionManager: ObservableObject {
             callback: { _, _, event, _ in Unmanaged.passUnretained(event) },
             userInfo: nil
         ) {
-            // Tap created successfully → permission granted, clean up
+            // Tap created successfully → permission granted, clean up and release
             CGEvent.tapEnable(tap: tap, enable: false)
+            CFMachPortInvalidate(tap)
             hasPermission = true
         } else {
             hasPermission = false

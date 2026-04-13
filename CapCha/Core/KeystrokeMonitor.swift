@@ -30,6 +30,9 @@ final class KeystrokeMonitor: ObservableObject {
                 return Unmanaged.passUnretained(event)
             }
 
+            // SAFETY: This callback runs on the main run loop (see CFRunLoopGetMain() below).
+            // totalCount is @Published and must only be mutated from the main thread.
+            // Do NOT move the event tap source to a background run loop.
             let monitor = Unmanaged<KeystrokeMonitor>.fromOpaque(refcon).takeUnretainedValue()
             monitor.totalCount += 1
             return Unmanaged.passUnretained(event)

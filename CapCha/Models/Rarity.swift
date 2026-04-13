@@ -61,8 +61,11 @@ enum Rarity: String, Codable, CaseIterable, Comparable {
     }
 
     static func < (lhs: Rarity, rhs: Rarity) -> Bool {
-        let order: [Rarity] = [.common, .uncommon, .rare, .epic, .legendary, .eternal]
-        return order.firstIndex(of: lhs)! < order.firstIndex(of: rhs)!
+        // Uses CaseIterable order — auto-updates when new cases are added
+        guard let li = allCases.firstIndex(of: lhs),
+              let ri = allCases.firstIndex(of: rhs)
+        else { return false }
+        return li < ri
     }
 }
 
@@ -77,7 +80,7 @@ struct RainbowText: View {
     }
 
     var body: some View {
-        TimelineView(.animation) { timeline in
+        TimelineView(.animation(minimumInterval: 0.05)) { timeline in
             let time = timeline.date.timeIntervalSinceReferenceDate
             let phase = time.truncatingRemainder(dividingBy: 3.0) / 3.0
 
