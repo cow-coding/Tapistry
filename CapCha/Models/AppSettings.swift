@@ -6,10 +6,18 @@ final class AppSettings: ObservableObject {
 
     @Published var launchAtLogin: Bool {
         didSet {
-            if launchAtLogin {
-                try? SMAppService.mainApp.register()
-            } else {
-                try? SMAppService.mainApp.unregister()
+            do {
+                if launchAtLogin {
+                    try SMAppService.mainApp.register()
+                } else {
+                    try SMAppService.mainApp.unregister()
+                }
+            } catch {
+                // Revert on failure
+                #if DEBUG
+                print("[AppSettings] SMAppService error: \(error)")
+                #endif
+                launchAtLogin = oldValue
             }
             save()
         }
@@ -22,7 +30,9 @@ final class AppSettings: ObservableObject {
     private let defaults = UserDefaults.standard
 
     private init() {
-        launchAtLogin = defaults.bool(forKey: "launchAtLogin")
+        // Read actual system state instead of stale UserDefaults
+        let systemStatus = SMAppService.mainApp.status
+        launchAtLogin = (systemStatus == .enabled)
         showDropNotifications = defaults.object(forKey: "showDropNotifications") as? Bool ?? true
     }
 

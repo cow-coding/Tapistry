@@ -12,6 +12,7 @@ final class StorageManager {
 
     private let fileManager = FileManager.default
     private let directory: URL
+    private let saveQueue = DispatchQueue(label: "com.capcha.storage", qos: .utility)
 
     private init() {
         let appSupport = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
@@ -34,13 +35,15 @@ final class StorageManager {
     // MARK: - Collection
 
     func saveCollection(_ items: [CollectedKeycap]) {
-        do {
-            let data = try JSONEncoder().encode(items)
-            try data.write(to: collectionURL, options: .atomic)
-        } catch {
-            #if DEBUG
-            print("[StorageManager] Save collection failed: \(error)")
-            #endif
+        saveQueue.async { [collectionURL] in
+            do {
+                let data = try JSONEncoder().encode(items)
+                try data.write(to: collectionURL, options: .atomic)
+            } catch {
+                #if DEBUG
+                print("[StorageManager] Save collection failed: \(error)")
+                #endif
+            }
         }
     }
 
@@ -104,13 +107,15 @@ final class StorageManager {
     // MARK: - Stats
 
     func saveStats(_ stats: UserStats) {
-        do {
-            let data = try JSONEncoder().encode(stats)
-            try data.write(to: statsURL, options: .atomic)
-        } catch {
-            #if DEBUG
-            print("[StorageManager] Save stats failed: \(error)")
-            #endif
+        saveQueue.async { [statsURL] in
+            do {
+                let data = try JSONEncoder().encode(stats)
+                try data.write(to: statsURL, options: .atomic)
+            } catch {
+                #if DEBUG
+                print("[StorageManager] Save stats failed: \(error)")
+                #endif
+            }
         }
     }
 

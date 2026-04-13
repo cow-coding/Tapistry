@@ -134,13 +134,9 @@ extension AppDelegate {
               volumeName.allSatisfy({ $0.isLetter || $0.isNumber || $0 == " " || $0 == "-" || $0 == "_" || $0 == "." })
         else { return }
 
-        DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 2) {
-            // Re-check the volume still exists right before ejecting
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             guard fm.fileExists(atPath: volumePath) else { return }
-            let process = Process()
-            process.executableURL = URL(fileURLWithPath: "/usr/sbin/diskutil")
-            process.arguments = ["eject", volumePath]
-            try? process.run()
+            NSWorkspace.shared.unmountAndEjectDevice(atPath: volumePath)
         }
     }
 }

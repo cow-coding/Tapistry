@@ -182,7 +182,7 @@ struct KeycapShapeView: View {
                 .frame(width: glowSize, height: glowSize)
                 .blur(radius: 14)
         case .eternal:
-            TimelineView(.animation) { timeline in
+            TimelineView(.animation(minimumInterval: 0.05)) { timeline in
                 let t = timeline.date.timeIntervalSinceReferenceDate
                 let hue = t.truncatingRemainder(dividingBy: 3.0) / 3.0
                 Circle()
