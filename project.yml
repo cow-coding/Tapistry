@@ -1,0 +1,28 @@
+name: TypeCollect
+options:
+  bundleIdPrefix: com.typecollect
+  deploymentTarget:
+    macOS: "13.0"
+  xcodeVersion: "16.0"
+  generateEmptyDirectories: true
+
+targets:
+  TypeCollect:
+    type: application
+    platform: macOS
+    sources:
+      - TypeCollect
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.typecollect.app
+        PRODUCT_NAME: TypeCollect
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        SWIFT_VERSION: "5.9"
+        MACOSX_DEPLOYMENT_TARGET: "13.0"
+        INFOPLIST_KEY_LSUIElement: YES
+        INFOPLIST_KEY_NSHumanReadableCopyright: "Copyright © 2026 TypeCollect. All rights reserved."
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGN_STYLE: Automatic
+        ENABLE_HARDENED_RUNTIME: NO
