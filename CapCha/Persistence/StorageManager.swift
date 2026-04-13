@@ -8,7 +8,7 @@ final class StorageManager {
 
     private init() {
         let appSupport = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        directory = appSupport.appendingPathComponent("TypeCollect", isDirectory: true)
+        directory = appSupport.appendingPathComponent("CapCha", isDirectory: true)
         try? fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
     }
 

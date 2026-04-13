@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct TypeCollectApp: App {
+struct CapChaApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
@@ -22,7 +22,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Create menu bar icon
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         if let button = statusItem.button {
-            button.image = NSImage(systemSymbolName: "keyboard", accessibilityDescription: "TypeCollect")
+            let icon = NSImage(named: "MenuBarIcon")
+            icon?.isTemplate = true
+            icon?.size = NSSize(width: 22, height: 22)
+            button.image = icon
             button.action = #selector(togglePopover)
             button.target = self
         }

@@ -1,4 +1,4 @@
-# TypeCollect
+# CapCha
 
 타이핑하면 키캡이 모이는 macOS 메뉴바 앱
 
@@ -37,7 +37,7 @@
 
 ## Privacy
 
-TypeCollect uses macOS Input Monitoring permission to count keystrokes.
+CapCha uses macOS Input Monitoring permission to count keystrokes.
 **We never read, store, or transmit what you type.** Only the keystroke count is tracked.
 
 ## License

@@ -1,27 +1,27 @@
-name: TypeCollect
+name: CapCha
 options:
-  bundleIdPrefix: com.typecollect
+  bundleIdPrefix: com.capcha
   deploymentTarget:
     macOS: "13.0"
   xcodeVersion: "16.0"
   generateEmptyDirectories: true
 
 targets:
-  TypeCollect:
+  CapCha:
     type: application
     platform: macOS
     sources:
-      - TypeCollect
+      - CapCha
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.typecollect.app
-        PRODUCT_NAME: TypeCollect
+        PRODUCT_BUNDLE_IDENTIFIER: com.capcha.app
+        PRODUCT_NAME: CapCha
         MARKETING_VERSION: "0.1.0"
         CURRENT_PROJECT_VERSION: "1"
         SWIFT_VERSION: "5.9"
         MACOSX_DEPLOYMENT_TARGET: "13.0"
         INFOPLIST_KEY_LSUIElement: YES
-        INFOPLIST_KEY_NSHumanReadableCopyright: "Copyright © 2026 TypeCollect. All rights reserved."
+        INFOPLIST_KEY_NSHumanReadableCopyright: "Copyright © 2026 CapCha. All rights reserved."
         GENERATE_INFOPLIST_FILE: YES
         CODE_SIGN_IDENTITY: "-"
         CODE_SIGN_STYLE: Automatic

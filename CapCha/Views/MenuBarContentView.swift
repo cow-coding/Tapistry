@@ -2,15 +2,20 @@ import SwiftUI
 
 struct MenuBarContentView: View {
     @ObservedObject var appState: AppState
+    @State private var isQuitHovering = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             // Header
-            HStack {
-                Image(systemName: "keyboard")
-                Text("TypeCollect")
+            HStack(spacing: 6) {
+                Image("MenuBarIcon")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 16, height: 16)
+                Text("CapCha")
                     .font(.headline)
             }
+            .frame(maxWidth: .infinity, alignment: .center)
             .padding(.horizontal, 16)
             .padding(.top, 12)
             .padding(.bottom, 8)
@@ -91,12 +96,22 @@ struct MenuBarContentView: View {
             }) {
                 HStack {
                     Image(systemName: "power")
-                    Text("Quit TypeCollect")
+                    Text("Quit CapCha")
+                    Spacer()
                 }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+                .frame(maxWidth: .infinity)
+                .background(isQuitHovering ? Color.red.opacity(0.15) : Color.clear)
+                .cornerRadius(6)
+                .foregroundColor(isQuitHovering ? .red : .primary)
             }
             .buttonStyle(.plain)
-            .padding(.horizontal, 16)
-            .padding(.vertical, 10)
+            .onHover { hovering in
+                isQuitHovering = hovering
+            }
+            .padding(.horizontal, 6)
+            .padding(.vertical, 6)
         }
         .frame(width: 280)
     }

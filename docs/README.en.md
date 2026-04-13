@@ -1,4 +1,4 @@
-# TypeCollect
+# CapCha
 A macOS menu bar app that collects virtual keycaps as you type
 
 ## Concept

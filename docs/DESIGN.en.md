@@ -1,8 +1,8 @@
-# TypeCollect - Architecture Design Document
+# CapCha - Architecture Design Document
 
 ## 1. Overview
 
-**TypeCollect** is a macOS menu bar app that automatically collects virtual keycap items as you type in your everyday work (development, office tasks, etc.).
+**CapCha** is a macOS menu bar app that automatically collects virtual keycap items as you type in your everyday work (development, office tasks, etc.).
 
 Inspired by Steam's "Banana" clicker game, but instead of clicking, you collect items simply by **typing as you normally would**, making it fully compatible with your daily workflow.
 
@@ -30,11 +30,11 @@ Inspired by Steam's "Banana" clicker game, but instead of clicking, you collect 
 ## 3. Project Structure
 
 ```
-TypeCollect/
-├── TypeCollect.xcodeproj
-├── TypeCollect/
+CapCha/
+├── CapCha.xcodeproj
+├── CapCha/
 │   ├── App/
-│   │   ├── TypeCollectApp.swift              # @main, MenuBarExtra scene
+│   │   ├── CapChaApp.swift              # @main, MenuBarExtra scene
 │   │   ├── AppDelegate.swift                 # NSApplicationDelegate lifecycle
 │   │   ├── AppState.swift                    # Central state management (ObservableObject)
 │   │   └── Info.plist                        # LSUIElement = YES
@@ -99,7 +99,7 @@ TypeCollect/
 │       ├── Constants.swift                   # App constants
 │       └── DateHelpers.swift                 # Date utilities
 │
-└── TypeCollectTests/
+└── CapChaTests/
     ├── DropEngineTests.swift
     ├── SessionTrackerTests.swift
     └── KeycapCatalogTests.swift
@@ -272,7 +272,7 @@ struct UserStats: Codable {
 
 ```
 ┌──────────────────────────────────┐
-│  ⌨️ TypeCollect                  │
+│  ⌨️ CapCha                  │
 ├──────────────────────────────────┤
 │                                  │
 │  Today: 3,247 keystrokes         │
@@ -291,7 +291,7 @@ struct UserStats: Codable {
 │  [Open Collection]  [Settings]   │
 │                                  │
 │  ─────────────────────────────── │
-│  [Quit TypeCollect]              │
+│  [Quit CapCha]              │
 └──────────────────────────────────┘
 ```
 
@@ -595,7 +595,7 @@ enum KeyboardLayout: String, Codable {
 
 ## 11. Persistence
 
-- Storage location: `~/Library/Application Support/TypeCollect/`
+- Storage location: `~/Library/Application Support/CapCha/`
 - Files: `collection.json`, `stats.json`, `settings.json`
 - Save timing: on drop events, every 60-second interval, on app termination (`applicationWillTerminate`)
 - Does not save on every keystroke (performance protection)
