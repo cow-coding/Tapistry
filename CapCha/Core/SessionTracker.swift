@@ -49,6 +49,15 @@ final class SessionTracker: ObservableObject {
             let skipped = delta - 500
             lastCheckedCount += skipped
             keystrokesSinceLastDrop += skipped
+
+            // If pity threshold was crossed during skip, trigger guaranteed drop
+            if keystrokesSinceLastDrop >= 2000 {
+                if let keycap = DropEngine.executeDrop(keystrokesSinceLastDrop: 2000, isFirstDrop: false) {
+                    keystrokesSinceLastDrop = 0
+                    hasEverDropped = true
+                    onDrop(keycap, lastCheckedCount)
+                }
+            }
         }
     }
 

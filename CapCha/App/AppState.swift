@@ -138,7 +138,7 @@ final class AppState: ObservableObject {
                 print("[AppState] Permission granted. Monitoring started.")
                 #endif
 
-                self.sessionTracker = SessionTracker(keystrokeMonitor: self.keystrokeMonitor) { [weak self] keycap, keystrokeNumber in
+                self.sessionTracker = SessionTracker(keystrokeMonitor: self.keystrokeMonitor, initialKeystrokesSinceLastDrop: self.savedPityCount, hasEverDropped: !self.collection.isEmpty) { [weak self] keycap, keystrokeNumber in
                     self?.handleDrop(keycap: keycap, keystrokeNumber: keystrokeNumber)
                 }
                 self.reEnableTimer = Timer.scheduledTimer(withTimeInterval: 30, repeats: true) { [weak self] _ in
@@ -210,8 +210,15 @@ final class AppState: ObservableObject {
         permissionPollTimer = nil
         saveTimer = nil
 
-        StorageManager.shared.saveCollection(collection)
-        saveStats()
+        // Sync save — must complete before process exits
+        StorageManager.shared.saveCollection(collection, sync: true)
+        let stats = UserStats(
+            totalKeystrokes: keystrokeMonitor.totalCount,
+            keystrokesSinceLastDrop: sessionTracker?.currentPityCount ?? 0,
+            todayKeystrokes: todayKeystrokeCount,
+            todayDate: Self.todayString()
+        )
+        StorageManager.shared.saveStats(stats, sync: true)
         keystrokeMonitor.stop()
     }
 }

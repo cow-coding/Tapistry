@@ -34,8 +34,8 @@ final class StorageManager {
 
     // MARK: - Collection
 
-    func saveCollection(_ items: [CollectedKeycap]) {
-        saveQueue.async { [collectionURL] in
+    func saveCollection(_ items: [CollectedKeycap], sync: Bool = false) {
+        let work = { [collectionURL] in
             do {
                 let data = try JSONEncoder().encode(items)
                 try data.write(to: collectionURL, options: .atomic)
@@ -44,6 +44,12 @@ final class StorageManager {
                 print("[StorageManager] Save collection failed: \(error)")
                 #endif
             }
+        }
+        if sync {
+            dispatchPrecondition(condition: .notOnQueue(saveQueue))
+            saveQueue.sync { work() }
+        } else {
+            saveQueue.async { work() }
         }
     }
 
@@ -90,8 +96,12 @@ final class StorageManager {
             }
         }
 
+        // Backup corrupt file before returning empty
+        let backupURL = directory.appendingPathComponent("collection.json.bak")
+        try? fileManager.removeItem(at: backupURL)
+        try? fileManager.copyItem(at: collectionURL, to: backupURL)
         #if DEBUG
-        print("[StorageManager] Could not parse collection data, preserving file")
+        print("[StorageManager] Could not parse collection data, backed up to collection.json.bak")
         #endif
         return []
     }
@@ -106,8 +116,8 @@ final class StorageManager {
 
     // MARK: - Stats
 
-    func saveStats(_ stats: UserStats) {
-        saveQueue.async { [statsURL] in
+    func saveStats(_ stats: UserStats, sync: Bool = false) {
+        let work = { [statsURL] in
             do {
                 let data = try JSONEncoder().encode(stats)
                 try data.write(to: statsURL, options: .atomic)
@@ -116,6 +126,12 @@ final class StorageManager {
                 print("[StorageManager] Save stats failed: \(error)")
                 #endif
             }
+        }
+        if sync {
+            dispatchPrecondition(condition: .notOnQueue(saveQueue))
+            saveQueue.sync { work() }
+        } else {
+            saveQueue.async { work() }
         }
     }
 

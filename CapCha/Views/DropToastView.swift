@@ -64,6 +64,11 @@ final class DropNotificationManager {
     }
 
     private func presentBubble(keycap: Keycap) {
+        // Skip if the button's window has another popover shown (main menu popover)
+        if let button = anchorButton, button.window?.attachedSheet != nil {
+            return
+        }
+
         guard let button = anchorButton else {
             #if DEBUG
             print("[DropNotification] No anchor button")
