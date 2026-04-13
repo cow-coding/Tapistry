@@ -6,126 +6,248 @@ struct KeycapShapeView: View {
     let rarity: Rarity
     let isCollected: Bool
     let size: CGFloat
+    var widthUnit: CGFloat = 1.0
+
+    // Clamp visual width: 1u=1x, modifiers slightly wider, wide keys wider, space capped
+    private var visualScale: CGFloat {
+        if widthUnit >= 5.0 { return 2.8 }        // Space
+        if widthUnit >= 2.0 { return widthUnit }   // Wide keys: actual ratio
+        return widthUnit                            // Standard + modifiers
+    }
+
+    private var displayWidth: CGFloat {
+        size * visualScale
+    }
+
+    private var displayHeight: CGFloat {
+        if widthUnit >= 5.0 { return size * 0.75 }  // Space: shorter
+        return size
+    }
 
     var body: some View {
         let baseColor = isCollected ? Color(hex: primaryColor) : Color.gray.opacity(0.25)
         let textColor = isCollected ? legendColor : Color.gray.opacity(0.4)
 
         ZStack {
-            // Background glow for Rare+
-            if isCollected {
-                rarityGlow
-            }
+            if isCollected { rarityGlow }
 
             Canvas { context, canvasSize in
                 let w = canvasSize.width
                 let h = canvasSize.height
-                let cx = w / 2
-
-                let topY = h * 0.08
-                let topW = w * 0.38
-                let topH = h * 0.22
-                let topCenter = CGPoint(x: cx, y: h * 0.28)
-
-                let topFace = Path { p in
-                    p.move(to: CGPoint(x: topCenter.x, y: topY))
-                    p.addLine(to: CGPoint(x: topCenter.x + topW, y: topCenter.y))
-                    p.addLine(to: CGPoint(x: topCenter.x, y: topCenter.y + topH))
-                    p.addLine(to: CGPoint(x: topCenter.x - topW, y: topCenter.y))
-                    p.closeSubpath()
-                }
-
-                let baseBottom = CGPoint(x: cx, y: h * 0.88)
-                let baseLeft = CGPoint(x: w * 0.06, y: h * 0.56)
-                let baseRight = CGPoint(x: w * 0.94, y: h * 0.56)
-
-                let leftSide = Path { p in
-                    p.move(to: CGPoint(x: topCenter.x - topW, y: topCenter.y))
-                    p.addLine(to: CGPoint(x: topCenter.x, y: topCenter.y + topH))
-                    p.addLine(to: baseBottom)
-                    p.addLine(to: baseLeft)
-                    p.closeSubpath()
-                }
-
-                let rightSide = Path { p in
-                    p.move(to: CGPoint(x: topCenter.x + topW, y: topCenter.y))
-                    p.addLine(to: CGPoint(x: topCenter.x, y: topCenter.y + topH))
-                    p.addLine(to: baseBottom)
-                    p.addLine(to: baseRight)
-                    p.closeSubpath()
-                }
-
-                // Fill sides
-                context.fill(leftSide, with: .color(darken(baseColor, by: 0.25)))
-                context.fill(rightSide, with: .color(darken(baseColor, by: 0.12)))
-
-                // Fill top
-                context.fill(topFace, with: .color(baseColor))
-
-                // Dish
-                let dishInset: CGFloat = 0.35
-                let dishW = topW * (1 - dishInset)
-                let dishH = topH * (1 - dishInset)
-                let dish = Path { p in
-                    p.move(to: CGPoint(x: topCenter.x, y: topCenter.y - dishH))
-                    p.addLine(to: CGPoint(x: topCenter.x + dishW, y: topCenter.y))
-                    p.addLine(to: CGPoint(x: topCenter.x, y: topCenter.y + dishH))
-                    p.addLine(to: CGPoint(x: topCenter.x - dishW, y: topCenter.y))
-                    p.closeSubpath()
-                }
-                context.fill(dish, with: .color(darken(baseColor, by: 0.06)))
-
-                // Outline - thicker for higher rarities
-                let outlineWidth: CGFloat = isCollected ? rarityOutlineWidth : 1.0
-                let outlineColor: Color = isCollected ? rarityOutlineColor : .gray.opacity(0.25)
-                context.stroke(topFace, with: .color(outlineColor), lineWidth: outlineWidth)
-                context.stroke(leftSide, with: .color(outlineColor), lineWidth: outlineWidth)
-                context.stroke(rightSide, with: .color(outlineColor), lineWidth: outlineWidth)
-
-                // Highlight - stronger for higher rarities
-                if isCollected {
-                    let hlAlpha = highlightAlpha
-                    let highlight = Path { p in
-                        p.move(to: CGPoint(x: topCenter.x, y: topY))
-                        p.addLine(to: CGPoint(x: topCenter.x + topW, y: topCenter.y))
-                    }
-                    let highlight2 = Path { p in
-                        p.move(to: CGPoint(x: topCenter.x, y: topY))
-                        p.addLine(to: CGPoint(x: topCenter.x - topW, y: topCenter.y))
-                    }
-                    context.stroke(highlight, with: .color(.white.opacity(hlAlpha)), lineWidth: highlightWidth)
-                    context.stroke(highlight2, with: .color(.white.opacity(hlAlpha * 0.7)), lineWidth: highlightWidth)
-
-                    // Epic+ inner shine on dish
-                    if rarity >= .epic {
-                        let shine = Path { p in
-                            p.move(to: CGPoint(x: topCenter.x, y: topCenter.y - dishH * 0.5))
-                            p.addLine(to: CGPoint(x: topCenter.x + dishW * 0.5, y: topCenter.y))
-                        }
-                        context.stroke(shine, with: .color(.white.opacity(0.5)), lineWidth: 1.5)
-                    }
-                }
+                drawIsometric(context: context, w: w, h: h, baseColor: baseColor)
             }
-            .frame(width: size, height: size)
+            .frame(width: displayWidth, height: displayHeight)
             .overlay(
                 Group {
                     if isCollected {
-                        Text(legendCharacter)
-                            .font(.system(size: size * 0.22, weight: .bold, design: .monospaced))
-                            .foregroundColor(textColor)
-                            .offset(y: -size * 0.22)
+                        legendView(textColor: textColor)
                     } else {
                         Image(systemName: "lock.fill")
-                            .font(.system(size: size * 0.18))
+                            .font(.system(size: size * 0.16))
                             .foregroundColor(.gray.opacity(0.4))
-                            .offset(y: -size * 0.22)
+                            .offset(y: -displayHeight * 0.18)
                     }
                 }
             )
         }
     }
 
-    // MARK: - Rarity Visual Properties
+    // MARK: - Legend View
+
+    @ViewBuilder
+    private func legendView(textColor: Color) -> some View {
+        let yOffset = -displayHeight * 0.18
+
+        if legendCharacter == "BS" {
+            // Backspace: icon + text
+            VStack(spacing: 1) {
+                Image(systemName: "delete.backward")
+                    .font(.system(size: legendFontSize * 0.6))
+                Text("Backspace")
+                    .font(.system(size: legendFontSize * 0.35, weight: .medium))
+            }
+            .foregroundColor(textColor)
+            .offset(y: yOffset)
+        } else if legendCharacter == "Enter" {
+            // Enter: ↵ symbol
+            Image(systemName: "return")
+                .font(.system(size: legendFontSize * 0.85))
+                .foregroundColor(textColor)
+                .offset(y: yOffset)
+        } else if legendCharacter == "Tab" {
+            Image(systemName: "arrow.right.to.line")
+                .font(.system(size: legendFontSize * 0.8))
+                .foregroundColor(textColor)
+                .offset(y: yOffset)
+        } else if legendCharacter == "Caps" {
+            Image(systemName: "capslock")
+                .font(.system(size: legendFontSize * 0.8))
+                .foregroundColor(textColor)
+                .offset(y: yOffset)
+        } else if legendCharacter == "Shift" {
+            Image(systemName: "shift")
+                .font(.system(size: legendFontSize * 0.85))
+                .foregroundColor(textColor)
+                .offset(y: yOffset)
+        } else if legendCharacter == "Ctrl" {
+            Image(systemName: "control")
+                .font(.system(size: legendFontSize * 0.8))
+                .foregroundColor(textColor)
+                .offset(y: yOffset)
+        } else if legendCharacter == "Alt" {
+            Image(systemName: "option")
+                .font(.system(size: legendFontSize * 0.8))
+                .foregroundColor(textColor)
+                .offset(y: yOffset)
+        } else if legendCharacter == "Cmd" {
+            Image(systemName: "command")
+                .font(.system(size: legendFontSize * 0.8))
+                .foregroundColor(textColor)
+                .offset(y: yOffset)
+        } else if legendCharacter == "Fn" {
+            Text("fn")
+                .font(.system(size: legendFontSize * 0.7, weight: .bold))
+                .foregroundColor(textColor)
+                .offset(y: yOffset)
+        } else if legendCharacter == "Space" {
+            // Space: just a subtle line or empty
+            Rectangle()
+                .fill(textColor.opacity(0.3))
+                .frame(width: displayWidth * 0.25, height: 1.5)
+                .offset(y: yOffset)
+        } else if legendCharacter == "Esc" {
+            Text("Esc")
+                .font(.system(size: legendFontSize * 0.7, weight: .bold))
+                .foregroundColor(textColor)
+                .offset(y: yOffset)
+        } else {
+            Text(legendCharacter)
+                .font(.system(size: legendFontSize, weight: .bold, design: .monospaced))
+                .foregroundColor(textColor)
+                .offset(y: yOffset)
+        }
+    }
+
+    // MARK: - Isometric Drawing (all keys)
+
+    private func drawIsometric(context: GraphicsContext, w: CGFloat, h: CGFloat, baseColor: Color) {
+        let cx = w / 2
+
+        // Top face proportions - adjust for wider keys
+        let topY = h * 0.08
+        let topW: CGFloat
+        let topH: CGFloat
+        let topCenterY: CGFloat
+
+        if widthUnit >= 5.0 {
+            // Space: wide and flat top
+            topW = w * 0.44
+            topH = h * 0.20
+            topCenterY = h * 0.30
+        } else if widthUnit >= 2.0 {
+            // Wide keys: wider top
+            topW = w * 0.42
+            topH = h * 0.22
+            topCenterY = h * 0.28
+        } else {
+            // Standard/modifier
+            topW = w * 0.38
+            topH = h * 0.22
+            topCenterY = h * 0.28
+        }
+
+        let topCenter = CGPoint(x: cx, y: topCenterY)
+
+        let topFace = Path { p in
+            p.move(to: CGPoint(x: cx, y: topY))
+            p.addLine(to: CGPoint(x: cx + topW, y: topCenter.y))
+            p.addLine(to: CGPoint(x: cx, y: topCenter.y + topH))
+            p.addLine(to: CGPoint(x: cx - topW, y: topCenter.y))
+            p.closeSubpath()
+        }
+
+        // Base - wider than top (tapered keycap)
+        let baseBottomY = h * (widthUnit >= 5.0 ? 0.85 : 0.88)
+        let baseSideY = h * (widthUnit >= 5.0 ? 0.58 : 0.56)
+        let baseBottom = CGPoint(x: cx, y: baseBottomY)
+        let baseLeft = CGPoint(x: w * 0.04, y: baseSideY)
+        let baseRight = CGPoint(x: w * 0.96, y: baseSideY)
+
+        let leftSide = Path { p in
+            p.move(to: CGPoint(x: cx - topW, y: topCenter.y))
+            p.addLine(to: CGPoint(x: cx, y: topCenter.y + topH))
+            p.addLine(to: baseBottom)
+            p.addLine(to: baseLeft)
+            p.closeSubpath()
+        }
+
+        let rightSide = Path { p in
+            p.move(to: CGPoint(x: cx + topW, y: topCenter.y))
+            p.addLine(to: CGPoint(x: cx, y: topCenter.y + topH))
+            p.addLine(to: baseBottom)
+            p.addLine(to: baseRight)
+            p.closeSubpath()
+        }
+
+        // Fill
+        context.fill(leftSide, with: .color(darken(baseColor, by: 0.25)))
+        context.fill(rightSide, with: .color(darken(baseColor, by: 0.12)))
+        context.fill(topFace, with: .color(baseColor))
+
+        // Dish
+        let dishInset: CGFloat = 0.30
+        let dishW = topW * (1 - dishInset)
+        let dishH = topH * (1 - dishInset)
+        let dish = Path { p in
+            p.move(to: CGPoint(x: cx, y: topCenter.y - dishH))
+            p.addLine(to: CGPoint(x: cx + dishW, y: topCenter.y))
+            p.addLine(to: CGPoint(x: cx, y: topCenter.y + dishH))
+            p.addLine(to: CGPoint(x: cx - dishW, y: topCenter.y))
+            p.closeSubpath()
+        }
+        context.fill(dish, with: .color(darken(baseColor, by: 0.06)))
+
+        // Outlines
+        let ow = rarityOutlineWidth
+        let oc = isCollected ? rarityOutlineColor : .gray.opacity(0.25)
+        context.stroke(topFace, with: .color(oc), lineWidth: ow)
+        context.stroke(leftSide, with: .color(oc), lineWidth: ow)
+        context.stroke(rightSide, with: .color(oc), lineWidth: ow)
+
+        // Highlights
+        if isCollected {
+            let hl = highlightAlpha
+            let hlPath1 = Path { p in
+                p.move(to: CGPoint(x: cx, y: topY))
+                p.addLine(to: CGPoint(x: cx + topW, y: topCenter.y))
+            }
+            let hlPath2 = Path { p in
+                p.move(to: CGPoint(x: cx, y: topY))
+                p.addLine(to: CGPoint(x: cx - topW, y: topCenter.y))
+            }
+            context.stroke(hlPath1, with: .color(.white.opacity(hl)), lineWidth: highlightWidth)
+            context.stroke(hlPath2, with: .color(.white.opacity(hl * 0.7)), lineWidth: highlightWidth)
+
+            if rarity >= .epic {
+                let shine = Path { p in
+                    p.move(to: CGPoint(x: cx, y: topCenter.y - dishH * 0.5))
+                    p.addLine(to: CGPoint(x: cx + dishW * 0.5, y: topCenter.y))
+                }
+                context.stroke(shine, with: .color(.white.opacity(0.5)), lineWidth: 1.5)
+            }
+        }
+    }
+
+    // MARK: - Legend sizing
+
+    private var legendFontSize: CGFloat {
+        if widthUnit >= 5.0 { return size * 0.14 }
+        if widthUnit >= 2.0 { return size * 0.17 }
+        if widthUnit > 1.0 { return size * 0.19 }
+        return size * 0.22
+    }
+
+    // MARK: - Rarity Effects
 
     @ViewBuilder
     private var rarityGlow: some View {
@@ -135,22 +257,22 @@ struct KeycapShapeView: View {
         case .uncommon:
             RoundedRectangle(cornerRadius: 8)
                 .fill(rarity.color.opacity(0.08))
-                .frame(width: size * 0.85, height: size * 0.85)
+                .frame(width: displayWidth * 0.9, height: displayHeight * 0.9)
                 .blur(radius: 4)
         case .rare:
             RoundedRectangle(cornerRadius: 8)
                 .fill(rarity.color.opacity(0.15))
-                .frame(width: size * 0.9, height: size * 0.9)
+                .frame(width: displayWidth * 0.9, height: displayHeight * 0.9)
                 .blur(radius: 6)
         case .epic:
             RoundedRectangle(cornerRadius: 8)
                 .fill(rarity.color.opacity(0.25))
-                .frame(width: size * 0.95, height: size * 0.95)
+                .frame(width: displayWidth * 0.95, height: displayHeight * 0.95)
                 .blur(radius: 10)
         case .legendary:
             RoundedRectangle(cornerRadius: 8)
                 .fill(Color.orange.opacity(0.3))
-                .frame(width: size, height: size)
+                .frame(width: displayWidth, height: displayHeight)
                 .blur(radius: 14)
         case .eternal:
             TimelineView(.animation) { timeline in
@@ -158,7 +280,7 @@ struct KeycapShapeView: View {
                 let hue = t.truncatingRemainder(dividingBy: 3.0) / 3.0
                 RoundedRectangle(cornerRadius: 8)
                     .fill(Color(hue: hue, saturation: 0.6, brightness: 1.0).opacity(0.35))
-                    .frame(width: size, height: size)
+                    .frame(width: displayWidth, height: displayHeight)
                     .blur(radius: 16)
             }
         }
@@ -170,8 +292,7 @@ struct KeycapShapeView: View {
         case .uncommon: return 1.5
         case .rare: return 2.0
         case .epic: return 2.5
-        case .legendary: return 3.0
-        case .eternal: return 3.0
+        case .legendary, .eternal: return 3.0
         }
     }
 

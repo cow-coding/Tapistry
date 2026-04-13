@@ -7,6 +7,14 @@ struct KeycapCardView: View {
 
     @State private var isHovering = false
 
+    private var cardWidthUnit: CGFloat {
+        keycap.widthUnit
+    }
+
+    private var cardSize: CGFloat {
+        keycap.widthUnit >= 5.0 ? 50 : 70
+    }
+
     var body: some View {
         VStack(spacing: 4) {
             ZStack(alignment: .topTrailing) {
@@ -15,7 +23,8 @@ struct KeycapCardView: View {
                     legendCharacter: keycap.legendCharacter,
                     rarity: keycap.rarity,
                     isCollected: isCollected,
-                    size: 80
+                    size: cardSize,
+                    widthUnit: cardWidthUnit
                 )
 
                 // Duplicate count badge
