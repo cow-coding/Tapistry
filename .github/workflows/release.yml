@@ -25,11 +25,13 @@ jobs:
 
       - name: Build
         run: |
+          VERSION="${GITHUB_REF_NAME#v}"
           xcodebuild -project CapCha.xcodeproj \
             -scheme CapCha \
             -configuration Release \
             -derivedDataPath build \
-            CODE_SIGN_IDENTITY="-"
+            CODE_SIGN_IDENTITY="-" \
+            MARKETING_VERSION="$VERSION"
 
       - name: Create DMG
         run: |
