@@ -12,7 +12,9 @@ CapCha runs quietly in your menu bar and drops virtual keycap collectibles as yo
 - Runs silently in the background as a menu bar app
 - **Never reads what you type** — only counts keystrokes
 - 6-tier rarity system: Common → Uncommon → Rare → Epic → Legendary → Eternal
-- 31 unique keycaps across 5 themed sets + Eternal Collection
+- 2,610 possible keycap combinations (87 keys × 5 sets × 6 rarities)
+- Pity system guarantees drops — no endless drought
+- Collection window to browse all your keycaps
 
 ## Installation
 
@@ -62,25 +64,54 @@ When updating CapCha, the old entry may remain in Input Monitoring settings:
 Once running, you'll see a keycap icon in your menu bar.
 
 - **Click the icon** to see your keystroke count and recent drops
-- **Keep typing** — keycaps drop randomly as you type (0.6% chance per keystroke)
+- **Keep typing** — keycaps drop with a base 0.25% chance per keystroke
 - **Drop notification** — a popover appears below the menu bar icon when you get a new keycap
+- **Open Collection** — browse all collected keycaps in a grid view
+- **Settings** — toggle launch at login and drop notifications
 
 ### Rarity Tiers
 
-| Rarity | Drop Rate | Color |
-|--------|-----------|-------|
-| Common | 59.4% | Gray |
-| Uncommon | 25% | Green |
-| Rare | 10% | Blue |
-| Epic | 4% | Purple |
-| Legendary | 1% | Orange |
-| Eternal | 0.6% | Rainbow (animated) |
+| Rarity | Drop Weight | Visual Effect |
+|--------|------------|---------------|
+| Common | 59.4% | Plain |
+| Uncommon | 25% | Green tint + subtle glow |
+| Rare | 10% | Blue glow + thick outline |
+| Epic | 4% | Purple glow + inner shine |
+| Legendary | 1% | Gold glow + inner shine |
+| Eternal | 0.6% | Animated rainbow glow |
+
+### Pity System
+
+No more endless droughts. Drop chance increases the longer you go without a drop:
+
+| Keystrokes Since Last Drop | Drop Chance |
+|---------------------------|-------------|
+| 0 – 499 | 0.25% (base) |
+| 500 – 999 | 0.25% → 0.5% (linear ramp) |
+| 1,000 – 1,999 | 0.5% → 1.0% (linear ramp) |
+| 2,000+ | **Guaranteed drop** |
+
+New users get a guaranteed Common keycap within their first 100 keystrokes.
+
+### Keycap Sets
+
+| Set | Theme |
+|-----|-------|
+| Mechanical Classics | Cherry-inspired reds |
+| Retro Computing | Vintage beige/brown |
+| Artisan Collection | Deep purples |
+| Nature Elements | Forest greens |
+| Space Theme | Cosmic blues |
+
+Each set contains all 87 TKL keys, and every key can appear in any rarity tier.
+Duplicates stack with a count — trade them later!
 
 ## Tech Stack
 
 - **Swift + SwiftUI** (macOS 13.0+)
-- **CGEvent tap** (Listen-Only) for global keystroke counting
+- **CGEvent tap** (Listen-Only, tailAppend) for global keystroke counting
 - **Combine** for reactive data flow
+- **Canvas** for isometric keycap rendering
 - **JSON** for local persistence (`~/Library/Application Support/CapCha/`)
 
 ## Build from Source
