@@ -12,7 +12,7 @@ struct CapChaApp: App {
     }
 }
 
-final class AppDelegate: NSObject, NSApplicationDelegate {
+final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
     private var statusItem: NSStatusItem!
     private var popover: NSPopover!
     private var appState: AppState!
@@ -38,6 +38,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         popover.contentSize = NSSize(width: 280, height: 300)
         popover.behavior = .transient
         popover.contentViewController = NSHostingController(rootView: MenuBarContentView(appState: appState))
+        popover.delegate = self
 
         // Pass status item button to drop notification manager
         DropNotificationManager.shared.anchorButton = statusItem.button
@@ -96,6 +97,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func closePopover() {
         popover.performClose(nil)
+    }
+
+    func popoverDidClose(_ notification: Notification) {
+        // Clean up event monitor whenever popover closes (transient, manual, or via button)
         if let monitor = eventMonitor {
             NSEvent.removeMonitor(monitor)
             eventMonitor = nil
