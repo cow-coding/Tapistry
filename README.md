@@ -47,6 +47,14 @@ CapCha needs Input Monitoring permission to count your keystrokes.
 4. Find **CapCha** in the list and toggle it **ON**
 5. You may need to restart CapCha after granting permission
 
+### Updating to a New Version
+
+When updating CapCha, the old entry may remain in Input Monitoring settings:
+
+1. Go to **System Settings → Privacy & Security → Input Monitoring**
+2. Remove the old **CapCha** entry (click **−** button)
+3. Install the new version and grant permission again
+
 > **Privacy**: CapCha uses `CGEvent tap` in listen-only mode. It only increments a counter on each key press — it never reads, stores, or transmits the content of your keystrokes.
 
 ## Usage
