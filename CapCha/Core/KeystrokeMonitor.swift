@@ -36,7 +36,7 @@ final class KeystrokeMonitor: ObservableObject {
 
         guard let tap = CGEvent.tapCreate(
             tap: .cgSessionEventTap,
-            place: .headInsertEventTap,
+            place: .tailAppendEventTap,
             options: .listenOnly,
             eventsOfInterest: eventMask,
             callback: callback,

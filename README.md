@@ -11,8 +11,8 @@ CapCha runs quietly in your menu bar and drops virtual keycap collectibles as yo
 
 - Runs silently in the background as a menu bar app
 - **Never reads what you type** — only counts keystrokes
-- 5-tier rarity system: Common → Uncommon → Rare → Epic → Legendary
-- 30 unique keycaps across 5 themed sets
+- 6-tier rarity system: Common → Uncommon → Rare → Epic → Legendary → Eternal
+- 31 unique keycaps across 5 themed sets + Eternal Collection
 
 ## Installation
 
@@ -61,11 +61,12 @@ Once running, you'll see a keycap icon in your menu bar.
 
 | Rarity | Drop Rate | Color |
 |--------|-----------|-------|
-| Common | 60% | Gray |
+| Common | 59.4% | Gray |
 | Uncommon | 25% | Green |
 | Rare | 10% | Blue |
 | Epic | 4% | Purple |
 | Legendary | 1% | Orange |
+| Eternal | 0.6% | Rainbow (animated) |
 
 ## Tech Stack
 
