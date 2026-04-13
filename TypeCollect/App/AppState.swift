@@ -19,7 +19,7 @@ final class AppState: ObservableObject {
         collection = StorageManager.shared.loadCollection()
         recentDrops = Array(collection.suffix(5).reversed())
 
-        // keystrokeMonitor의 카운트 변경을 AppState로 전달
+        // Forward keystroke count changes to AppState for SwiftUI binding
         keystrokeMonitor.$totalCount
             .receive(on: DispatchQueue.main)
             .assign(to: &$keystrokeCount)

@@ -10,8 +10,8 @@ final class PermissionManager: ObservableObject {
     }
 
     func checkPermission() {
-        // CGPreflightListenEventAccess는 개발 중 신뢰할 수 없으므로
-        // 실제로 event tap 생성을 시도하여 권한 확인
+        // CGPreflightListenEventAccess is unreliable during development,
+        // so we attempt to create an event tap to verify permission
         let eventMask: CGEventMask = (1 << CGEventType.keyDown.rawValue)
         if let tap = CGEvent.tapCreate(
             tap: .cgSessionEventTap,
@@ -21,7 +21,7 @@ final class PermissionManager: ObservableObject {
             callback: { _, _, event, _ in Unmanaged.passUnretained(event) },
             userInfo: nil
         ) {
-            // 생성 성공 → 권한 있음, 바로 정리
+            // Tap created successfully → permission granted, clean up
             CGEvent.tapEnable(tap: tap, enable: false)
             hasPermission = true
         } else {

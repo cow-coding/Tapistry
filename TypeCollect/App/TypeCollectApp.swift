@@ -19,7 +19,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         appState = AppState()
 
-        // 메뉴바 아이콘 생성
+        // Create menu bar icon
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         if let button = statusItem.button {
             button.image = NSImage(systemSymbolName: "keyboard", accessibilityDescription: "TypeCollect")
@@ -27,13 +27,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             button.target = self
         }
 
-        // 메인 팝오버
+        // Main popover
         popover = NSPopover()
         popover.contentSize = NSSize(width: 280, height: 300)
         popover.behavior = .transient
         popover.contentViewController = NSHostingController(rootView: MenuBarContentView(appState: appState))
 
-        // 드롭 알림에 statusItem 버튼 전달
+        // Pass status item button to drop notification manager
         DropNotificationManager.shared.anchorButton = statusItem.button
     }
 

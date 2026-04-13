@@ -15,15 +15,15 @@ final class SessionTracker: ObservableObject {
         keystrokeMonitor.$totalCount
             .receive(on: DispatchQueue.main)
             .sink { [weak self] count in
-                self?.evaluateBatch(currentCount: count)
+                self?.evaluate(currentCount: count)
             }
             .store(in: &cancellables)
     }
 
-    private func evaluateBatch(currentCount: Int) {
-        let batchSize = DropEngine.batchSize
-        while currentCount - lastCheckedCount >= batchSize {
-            lastCheckedCount += batchSize
+    private func evaluate(currentCount: Int) {
+        // Evaluate drop for each keystroke
+        while lastCheckedCount < currentCount {
+            lastCheckedCount += 1
             if let keycap = DropEngine.executeDrop() {
                 onDrop(keycap, lastCheckedCount)
             }
