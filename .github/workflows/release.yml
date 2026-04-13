@@ -64,9 +64,13 @@ jobs:
             ### Install
             1. Download `CapCha-${{ github.ref_name }}.dmg`
             2. Open the DMG and drag **CapCha** to **Applications**
-            3. Right-click → Open (first launch only, since the app is unsigned)
-            4. Grant **Input Monitoring** permission when prompted
+            3. Run this command in Terminal before first launch:
+               ```
+               xattr -cr /Applications/CapCha.app
+               ```
+            4. Open **CapCha** from Applications
+            5. Grant **Input Monitoring** permission when prompted
 
-            ### Note
-            This app is not code-signed. macOS will show a warning on first launch.
-            Use **Right-click → Open** to bypass Gatekeeper.
+            ### Why do I need the terminal command?
+            This app is not code-signed with an Apple Developer ID.
+            macOS Gatekeeper will show "CapCha is damaged" without clearing the quarantine attribute first.
