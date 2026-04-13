@@ -13,7 +13,9 @@ struct KeycapDetailView: View {
                 legendCharacter: keycap.legendCharacter,
                 rarity: keycap.rarity,
                 isCollected: collected != nil,
-                size: 140
+                size: 140,
+                widthUnit: keycap.widthUnit,
+                setName: keycap.setName
             )
 
             // Info
@@ -64,7 +66,7 @@ struct KeycapDetailView: View {
             .controlSize(.regular)
         }
         .padding(24)
-        .frame(width: 320, height: 440)
+        .frame(width: max(320, keycap.widthUnit >= 2.0 ? 420 : 320), height: 440)
     }
 
     private func detailRow(_ label: String, value: String) -> some View {
@@ -82,8 +84,7 @@ struct KeycapDetailView: View {
 
     private func formatted(date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
+        formatter.dateFormat = "yyyy.MM.dd HH:mm:ss"
         return formatter.string(from: date)
     }
 }

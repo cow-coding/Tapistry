@@ -11,7 +11,9 @@ struct DropBubbleContent: View {
                 legendCharacter: keycap.legendCharacter,
                 rarity: keycap.rarity,
                 isCollected: true,
-                size: 44
+                size: 44,
+                widthUnit: keycap.widthUnit,
+                setName: keycap.setName
             )
 
             VStack(alignment: .leading, spacing: 2) {
