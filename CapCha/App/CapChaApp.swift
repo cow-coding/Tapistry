@@ -126,7 +126,7 @@ extension Notification.Name {
 }
 
 extension AppDelegate {
-    /// If the app was launched from a DMG, eject it
+    /// If the app was launched from a DMG, ask to eject it
     private func ejectDMGIfNeeded() {
         let bundlePath = Bundle.main.bundlePath
         guard bundlePath.hasPrefix("/Volumes/") else { return }
@@ -136,15 +136,24 @@ extension AppDelegate {
         let volumeName = String(components[1])
         let volumePath = "/Volumes/\(volumeName)"
 
-        // Validate: path must exist, must be a mount point, and name must be safe
         let fm = FileManager.default
         guard fm.fileExists(atPath: volumePath),
               volumeName.allSatisfy({ $0.isLetter || $0.isNumber || $0 == " " || $0 == "-" || $0 == "_" || $0 == "." })
         else { return }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             guard fm.fileExists(atPath: volumePath) else { return }
-            NSWorkspace.shared.unmountAndEjectDevice(atPath: volumePath)
+
+            let alert = NSAlert()
+            alert.messageText = "디스크 이미지를 마운트 해제할까요?"
+            alert.informativeText = "CapCha를 Applications 폴더로 옮긴 후 디스크 이미지를 해제하는 것을 권장합니다."
+            alert.alertStyle = .informational
+            alert.addButton(withTitle: "해제")
+            alert.addButton(withTitle: "나중에")
+
+            if alert.runModal() == .alertFirstButtonReturn {
+                NSWorkspace.shared.unmountAndEjectDevice(atPath: volumePath)
+            }
         }
     }
 }
