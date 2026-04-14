@@ -31,24 +31,19 @@ struct MenuBarContentView: View {
     // MARK: - Header
 
     private var headerBar: some View {
-        HStack {
-            Image(systemName: "keyboard")
-                .font(.system(size: 14, weight: .medium))
+        HStack(spacing: 8) {
+            Image("MenuBarIcon")
+                .resizable()
+                .renderingMode(.template)
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 16, height: 16)
                 .foregroundStyle(.blue)
-
-            Spacer()
 
             Text("CapCha")
                 .font(.system(size: 14, weight: .bold))
                 .tracking(-0.3)
-
-            Spacer()
-
-            // Symmetry spacer
-            Color.clear
-                .frame(width: 14, height: 14)
         }
-        .padding(.horizontal, 12)
+        .frame(maxWidth: .infinity, alignment: .center)
         .frame(height: 40)
         .background(.bar)
     }
