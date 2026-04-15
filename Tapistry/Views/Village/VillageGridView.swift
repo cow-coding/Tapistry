@@ -159,9 +159,9 @@ struct VillageTileView: View {
     private var subStepY: CGFloat { blockSize / 12 }
     /// Y of the (row=0, col=0) sub-cell center, relative to ZStack center.
     private var subOriginY: CGFloat { topFaceOffsetY - blockSize / 6 }
-    /// Rendered size of a sub-cell object sprite (intentionally larger than a sub-cell so
-    /// neighbors overlap slightly for a dense village feel).
-    private var subObjectSize: CGFloat { blockSize / 2 }
+    /// Rendered size of a sub-cell object sprite — sized to fit within the sub-cell
+    /// diamond (blockSize/3 wide) so neighbors don't spill into each other.
+    private var subObjectSize: CGFloat { blockSize / 3 }
 
     private struct Renderable: Identifiable {
         let subRow: Int
