@@ -124,7 +124,7 @@ struct VillageGridView: View {
             set: { if !$0 { selectedCell = nil } }
         )) {
             if let (row, col) = selectedCell {
-                BuildingPickerView(
+                TileEditorView(
                     village: village,
                     row: row,
                     col: col,
@@ -140,6 +140,11 @@ struct VillageTileView: View {
     let tile: VillageTile
     let blockSize: CGFloat
     let isSelected: Bool
+
+    /// Editor preview: highlight a specific sub-cell with a small yellow diamond.
+    var selectedSubCell: (Int, Int)? = nil
+    /// Editor preview: invoke when a sub-cell diamond is tapped.
+    var onSubCellTap: ((Int, Int) -> Void)? = nil
 
     @State private var selectionPulse: Bool = false
 
@@ -268,6 +273,33 @@ struct VillageTileView: View {
                     )
                     .offset(x: off.width, y: off.height - subObjectSize / 2)
                     .allowsHitTesting(false)
+            }
+
+            // Editor mode: sub-cell tap targets + selection highlight
+            if onSubCellTap != nil || selectedSubCell != nil {
+                ForEach(0..<VillageTile.subGridSize, id: \.self) { sr in
+                    ForEach(0..<VillageTile.subGridSize, id: \.self) { sc in
+                        let off = subCellOffset(subRow: sr, subCol: sc)
+                        let diamondW = blockSize / 3
+                        let diamondH = blockSize / 6
+                        let isSel = selectedSubCell.map { $0.0 == sr && $0.1 == sc } ?? false
+
+                        ZStack {
+                            IsometricDiamond()
+                                .fill(isSel ? Color.yellow.opacity(0.30) : Color.white.opacity(0.001))
+                            if isSel {
+                                IsometricDiamond()
+                                    .stroke(Color.yellow, lineWidth: 1.5)
+                            }
+                        }
+                        .frame(width: diamondW, height: diamondH)
+                        .offset(x: off.width, y: off.height)
+                        .contentShape(IsometricDiamond())
+                        .onTapGesture {
+                            onSubCellTap?(sr, sc)
+                        }
+                    }
+                }
             }
         }
         // Restrict hit area to the diamond top face so adjacent tiles don't overlap
