@@ -292,11 +292,15 @@ struct VillageTileView: View {
                         y: subObjectSize * 0.06
                     )
                     // Sub-cell anchor: the sprite's visual bottom (not bounding-box bottom)
-                    // lands at off.height. baselineShift pushes sprites with trailing empty
-                    // rows downward so content, not padding, sits on the iso anchor.
+                    // lands at the sub-cell's *bottom vertex* — the front-most iso point
+                    // of the diamond, which is where a building actually "stands". That's
+                    // off.height + blockSize/12 (half the sub-cell diamond height past
+                    // its center). baselineShift additionally accounts for any trailing
+                    // empty rows in the sprite's 32-row grid so padding doesn't show as
+                    // empty space under the building.
                     .offset(
                         x: off.width,
-                        y: off.height - subObjectSize / 2 + baselineShift
+                        y: off.height + blockSize / 12 - subObjectSize / 2 + baselineShift
                     )
                     .allowsHitTesting(false)
             }
