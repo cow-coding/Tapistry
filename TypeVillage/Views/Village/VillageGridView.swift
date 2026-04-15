@@ -153,6 +153,14 @@ struct VillageTileView: View {
             // Base: grass block (always)
             GrassBlockView(size: blockSize)
 
+            // Ground layer — tints & decorates the top face
+            if let groundId = tile.ground,
+               let building = BuildingCatalog.find(groundId) {
+                GroundLayerView(building: building, blockSize: blockSize)
+                    .offset(y: topFaceOffsetY)
+                    .allowsHitTesting(false)
+            }
+
             // Selection highlight on top face (diamond)
             if isSelected {
                 IsometricDiamond()
@@ -188,9 +196,89 @@ struct VillageTileView: View {
                         }
                     }
             }
+
+            // Decoration layer — sits on top of object
+            if let decorationId = tile.decoration,
+               let building = BuildingCatalog.find(decorationId) {
+                DecorationLayerView(building: building, blockSize: blockSize)
+                    .offset(y: -blockSize / 4)
+                    .allowsHitTesting(false)
+            }
         }
         // Restrict hit area to the diamond top face so adjacent tiles don't overlap
         .contentShape(TopFaceDiamondHitArea())
+    }
+}
+
+/// Ground layer: tints the top face + scatters small emoji dots
+struct GroundLayerView: View {
+    let building: BuildingType
+    let blockSize: CGFloat
+
+    private var tint: Color {
+        switch building.id {
+        case "flowers":    return Color(red: 0.95, green: 0.70, blue: 0.80).opacity(0.55)
+        case "stone_path": return Color(red: 0.58, green: 0.58, blue: 0.60).opacity(0.75)
+        default:           return Color.clear
+        }
+    }
+
+    var body: some View {
+        ZStack {
+            IsometricDiamond()
+                .fill(tint)
+                .frame(width: blockSize, height: blockSize / 2)
+
+            // Light outline to integrate with grass edges
+            IsometricDiamond()
+                .stroke(Color.black.opacity(0.15), lineWidth: 0.5)
+                .frame(width: blockSize, height: blockSize / 2)
+
+            // Scattered emoji tokens for character
+            Text(building.emoji)
+                .font(.system(size: blockSize * 0.22))
+                .offset(x: -blockSize * 0.15, y: -blockSize * 0.02)
+            Text(building.emoji)
+                .font(.system(size: blockSize * 0.18))
+                .offset(x: blockSize * 0.12, y: blockSize * 0.06)
+            Text(building.emoji)
+                .font(.system(size: blockSize * 0.16))
+                .offset(x: -blockSize * 0.02, y: -blockSize * 0.10)
+        }
+    }
+}
+
+/// Decoration layer: small accent positioned in front-right of the object
+struct DecorationLayerView: View {
+    let building: BuildingType
+    let blockSize: CGFloat
+
+    var body: some View {
+        // Fence wraps the front edge, lamp sits front-right
+        Group {
+            switch building.id {
+            case "fence":
+                // Two stacked fence emojis at front-left and front-right of the diamond
+                ZStack {
+                    Text(building.emoji)
+                        .font(.system(size: blockSize * 0.32))
+                        .offset(x: -blockSize * 0.22, y: blockSize * 0.22)
+                    Text(building.emoji)
+                        .font(.system(size: blockSize * 0.32))
+                        .offset(x: blockSize * 0.22, y: blockSize * 0.22)
+                }
+            case "lamp":
+                Text(building.emoji)
+                    .font(.system(size: blockSize * 0.42))
+                    .offset(x: blockSize * 0.28, y: blockSize * 0.02)
+                    .shadow(color: .yellow.opacity(0.5), radius: 4)
+            default:
+                Text(building.emoji)
+                    .font(.system(size: blockSize * 0.35))
+                    .offset(x: blockSize * 0.22, y: blockSize * 0.18)
+            }
+        }
+        .shadow(color: .black.opacity(0.35), radius: 1.5, x: 0, y: 1)
     }
 }
 
