@@ -190,6 +190,22 @@ struct VillageTileView: View {
         return CGSize(width: x, height: y)
     }
 
+    /// Iso Y-axis tilt applied to each sprite so it reads as set into the quarter-view scene.
+    /// Upright elements stay flat (billboard convention); structural / ground-adjacent
+    /// elements tilt so their front face angles toward the viewer.
+    private func isoTiltDegrees(for building: BuildingType) -> Double {
+        switch building.id {
+        case "tree", "lamp":
+            return 0          // vertical billboards
+        case "flowers", "stone_path":
+            return 0          // ground layer — no tilt (diamond clip already handles iso)
+        case "fence":
+            return 14         // slightly less than buildings — still reads as linear
+        default:
+            return 16         // house, shop, well, farm, windmill
+        }
+    }
+
     var body: some View {
         ZStack {
             // Base: grass block (always)
@@ -228,11 +244,23 @@ struct VillageTileView: View {
             // Each sprite's BOTTOM sits on its sub-cell center so sprites appear to stand
             // on that cell. Since .offset moves the sprite's frame center, we subtract
             // half the sprite height from the cell center y.
+            //
+            // Structures (houses, shops, fences, etc.) get a subtle Y-axis tilt so they
+            // read as set into the quarter-view scene. Tall upright elements (tree, lamp)
+            // are treated as iso billboards and stay flat — the classic pixel-art
+            // convention for these shapes.
             ForEach(renderables) { item in
                 let off = subCellOffset(subRow: item.subRow, subCol: item.subCol)
+                let tilt = isoTiltDegrees(for: item.building)
                 BuildingPixelView(building: item.building, size: subObjectSize)
                     .shadow(color: .black.opacity(item.isDecoration ? 0.25 : 0.4),
                             radius: item.isDecoration ? 1.5 : 2, x: 0, y: 1.5)
+                    .rotation3DEffect(
+                        .degrees(tilt),
+                        axis: (x: 0, y: 1, z: 0),
+                        anchor: .bottom,
+                        perspective: 0.18
+                    )
                     .offset(x: off.width, y: off.height - subObjectSize / 2)
                     .allowsHitTesting(false)
             }

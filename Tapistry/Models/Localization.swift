@@ -41,9 +41,10 @@ struct LocalizedString {
 /// Centralized localized strings for the app
 enum L10n {
     // Menu bar
-    static let appName        = LocalizedString("Tapistry", ko: "태피스트리")
+    // Brand name stays in English across all locales
+    static let appName        = LocalizedString("Tapistry", ko: "Tapistry")
     static let settings       = LocalizedString("Settings", ko: "설정")
-    static let quit           = LocalizedString("Quit Tapistry", ko: "태피스트리 종료")
+    static let quit           = LocalizedString("Quit Tapistry", ko: "Tapistry 종료")
 
     // Permission banner
     static let permissionTitle    = LocalizedString("Input Monitoring required", ko: "입력 모니터링 권한 필요")
