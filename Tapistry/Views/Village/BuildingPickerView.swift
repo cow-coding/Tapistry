@@ -141,8 +141,8 @@ struct BuildingPickerView: View {
         let tile = village.grid[row][col]
         switch selectedLayer {
         case .ground: return tile.ground
-        case .object: return tile.object
-        case .decoration: return tile.decoration
+        case .object: return tile.centerSubCell.object
+        case .decoration: return tile.centerSubCell.decoration
         }
     }
 }

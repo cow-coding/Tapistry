@@ -181,8 +181,9 @@ struct VillageTileView: View {
                     .onAppear { selectionPulse = true }
             }
 
-            // Object layer (tree, house, etc.)
-            if let objectId = tile.object,
+            // Object layer (tree, house, etc.) — Phase 2 reads center sub-cell;
+            // Phase 3 will iterate all 3×3 sub-cells.
+            if let objectId = tile.centerSubCell.object,
                let building = BuildingCatalog.find(objectId) {
                 BuildingPixelView(building: building, size: blockSize)
                     .offset(y: -blockSize / 4)
@@ -197,8 +198,8 @@ struct VillageTileView: View {
                     }
             }
 
-            // Decoration layer — sits on top of object
-            if let decorationId = tile.decoration,
+            // Decoration layer — sits on top of object (center sub-cell until Phase 3)
+            if let decorationId = tile.centerSubCell.decoration,
                let building = BuildingCatalog.find(decorationId) {
                 DecorationLayerView(building: building, blockSize: blockSize)
                     .offset(y: -blockSize / 4)
