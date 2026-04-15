@@ -188,56 +188,60 @@ private enum Sprites {
 
     // MARK: House (32×32)
 
-    /// Iso-perspective house: pyramid roof with separate south + east slopes, and
-    /// rectangular south-facing wall + sheared east-facing wall meeting at the vertical
-    /// SE corner. No SwiftUI shear/shadow is applied to this sprite — the 3D faces are
-    /// painted directly into the pixel data.
+    /// Iso-perspective house: pyramid roof, sheared south + east walls meeting at the
+    /// vertical SE corner. Wall base edges follow the grass block's diamond edges
+    /// (south wall slopes +0.5 down-right, east wall slopes -0.5 up-right) so the
+    /// building sits naturally on the tile. No SwiftUI shear/shadow is applied.
+    ///
+    /// Geometry (sprite coords):
+    ///   SW_g(10,17) SE_g(22,23) NE_g(28,20) NW_g(16,14)   ground corners
+    ///   peak(19,5)                                          roof apex
     static let house = PixelArt(
         rows: [
             "................................",
             "................................",
             "................................",
             "................................",
-            "...............R................",
-            "..............RRrr..............",
-            ".............RRRrrrr............",
-            "............RRRRRrrrrrr.........",
-            "...........RRRRRRrrrrrrrr.......",
-            ".........RRRRRRRRRrrrrrrrrrr....",
-            "........RRRRRRRRRRrrrrrrrrEE....",
-            ".......RRRRRRRRRRRRrrrrrEEEE....",
-            "......RRRRRRRRRRRRRrrrEEEEEE....",
-            "....RRRRRRRRRRRRRRRrEEEEEEEE....",
-            "....WWWWWWWWWWWWWWWEEEEEEEEE....",
-            "....WnnnnnnnnnnnnnWEeeeeeeeE....",
-            "....WnXXXnnnnnXXXnWEeeeeeeeE....",
-            "....WnXXXnnnnnXXXnWEeeeeeeeE....",
-            "....WnXXXnnnnnXXXnWEeeeeeeeE....",
-            "....WnnnnnnnnnnnnnWEeeeeeeeE....",
-            "....WnnnnnnnnnnnnnWEeeeeeeeE....",
-            "....WnnnnnnnnnnnnnWEeeeeeeeE....",
-            "....WnnnnDDDDDnnnnWEeeeeeeeE....",
-            "....WnnnnDdddDnnnnWEeeeeeeeE....",
-            "....WnnnnDdhdDnnnnWEeeeeeE......",
-            "....WnnnnDdddDnnnnWEeeeE........",
-            "....WnnnnDDDDDnnnnWEeE..........",
-            "....KKKKKKKKKKKKKKKE............",
+            "................................",
+            "................RRRr............",
+            "..............RRRRRRrr..........",
+            "...........RRRRRRRRRrrr.........",
+            "..........nRRRRRRRRRrrrrr.......",
+            ".........nnnnRRRRRRRRrrrrr......",
+            ".........nnnnnnRRRRRRrrrrrr.....",
+            "........nnnnnnnnnRRRRrrrrrre....",
+            "........nnnXXXnnnnnRRRrrree.....",
+            ".......nnnXXXnnnnnnnnRreee......",
+            ".......nnnnnnnnnnnnnnneee.......",
+            "......nnnnnnnnnnnnnnnEeee.......",
+            "......nnnnDDDDnnnnnnnEeeE.......",
+            ".....nnnnDDDDDnnnnnneeee........",
+            ".....nnnnDdhDDnnnnnneeee........",
+            "....nnnnnDDDDDnnnnneeee.........",
+            ".....nnnnKKKKKKnnnneeee.........",
+            ".......nnnnnnnnnnnneee..........",
+            ".........nnnnnnnneeee...........",
+            "...........nnnnneeee............",
+            ".............neee...............",
+            "................................",
+            "................................",
+            "................................",
+            "................................",
             "................................",
             "................................",
             "................................",
         ],
         colors: [
-            "R": SpriteColors.roof,           // south roof face
-            "r": SpriteColors.roofDark,       // east roof face (in shadow)
-            "W": SpriteColors.wallDark,       // south wall trim
-            "n": SpriteColors.wall,           // south wall body
-            "E": SpriteColors.plankDark,      // east wall trim
-            "e": SpriteColors.wallDark,       // east wall body (shaded cream)
+            "R": SpriteColors.roof,          // south roof face
+            "r": SpriteColors.roofDark,      // east roof face (in shadow)
+            "n": SpriteColors.wall,          // south wall body
+            "e": SpriteColors.wallDark,      // east wall body (shaded)
+            "E": SpriteColors.plankDark,     // wall corner edge (vertical SE edge)
             "X": SpriteColors.window,
             "D": SpriteColors.door,
             "d": SpriteColors.doorLight,
-            "h": SpriteColors.shopSign,       // doorknob accent
-            "K": SpriteColors.plankDark,      // base trim
+            "h": SpriteColors.shopSign,      // doorknob
+            "K": SpriteColors.plankDark,     // door base trim
         ]
     )
 
