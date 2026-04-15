@@ -207,7 +207,7 @@ struct VillageTileView: View {
         case "farm":     return 10
         case "fence":    return 5
         case "windmill": return 3
-        case "house":    return 1
+        case "house":    return 4   // iso redraw: row 27 base trim, rows 28-31 empty
         case "shop":     return 2
         case "tree":     return 2
         default:         return 0
@@ -228,6 +228,8 @@ struct VillageTileView: View {
             return 0
         case "flowers", "stone_path":
             return 0
+        case "house":
+            return 0          // iso perspective already in the sprite pixels
         default:
             return -0.5       // south face visible — top-right corner rises to match left diamond edge
         }

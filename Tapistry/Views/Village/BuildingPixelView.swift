@@ -188,54 +188,56 @@ private enum Sprites {
 
     // MARK: House (32×32)
 
+    /// Iso-perspective house: pyramid roof with separate south + east slopes, and
+    /// rectangular south-facing wall + sheared east-facing wall meeting at the vertical
+    /// SE corner. No SwiftUI shear/shadow is applied to this sprite — the 3D faces are
+    /// painted directly into the pixel data.
     static let house = PixelArt(
         rows: [
             "................................",
             "................................",
-            "....................cCCc........",
-            ".....................CC.........",
-            ".....................CC.........",
-            "..............rRRRr..CC.........",
-            ".............rRRRRRr.CC.........",
-            "............rRRRRRRRrCC.........",
-            "...........rRRRRRRRRRr..........",
-            "..........rRRRRRRRRRRRr.........",
-            ".........rRRRRRRRRRRRRRr........",
-            "........rRRRRRRRRRRRRRRRr.......",
-            ".......rRRRRRRRRRRRRRRRRRr......",
-            "......rRRRRRRRRRRRRRRRRRRRr.....",
-            ".....rRRRRRRRRRRRRRRRRRRRRRr....",
-            "......WWWWWWWWWWWWWWWWWWWW......",
-            "......WnnnnnnnnnnnnnnnnnnW......",
-            "......WnnXXXXnnnnnnXXXXnnW......",
-            "......WnnXXXXnnnnnnXXXXnnW......",
-            "......WnnXXXXnnnnnnXXXXnnW......",
-            "......WnnnnnnnnnnnnnnnnnnW......",
-            "......WnnnnnnnDDDDnnnnnnnW......",
-            "......WnnnnnnnDddDnnnnnnnW......",
-            "......WnnnnnnnDdhDnnnnnnnW......",
-            "......WnnnnnnnDddDnnnnnnnW......",
-            "......WnnnnnnnDddDnnnnnnnW......",
-            "......WnnnnnnnDDDDnnnnnnnW......",
-            "......WWWWWWWWWWWWWWWWWWWW......",
-            ".....KKKKKKKKKKKKKKKKKKKKKK.....",
-            "....xxxxxxxxxxxxxxxxxxxxxxxx....",
-            ".....xxxxxxxxxxxxxxxxxxxxxx.....",
+            "................................",
+            "................................",
+            "...............R................",
+            "..............RRrr..............",
+            ".............RRRrrrr............",
+            "............RRRRRrrrrrr.........",
+            "...........RRRRRRrrrrrrrr.......",
+            ".........RRRRRRRRRrrrrrrrrrr....",
+            "........RRRRRRRRRRrrrrrrrrEE....",
+            ".......RRRRRRRRRRRRrrrrrEEEE....",
+            "......RRRRRRRRRRRRRrrrEEEEEE....",
+            "....RRRRRRRRRRRRRRRrEEEEEEEE....",
+            "....WWWWWWWWWWWWWWWEEEEEEEEE....",
+            "....WnnnnnnnnnnnnnWEeeeeeeeE....",
+            "....WnXXXnnnnnXXXnWEeeeeeeeE....",
+            "....WnXXXnnnnnXXXnWEeeeeeeeE....",
+            "....WnXXXnnnnnXXXnWEeeeeeeeE....",
+            "....WnnnnnnnnnnnnnWEeeeeeeeE....",
+            "....WnnnnnnnnnnnnnWEeeeeeeeE....",
+            "....WnnnnnnnnnnnnnWEeeeeeeeE....",
+            "....WnnnnDDDDDnnnnWEeeeeeeeE....",
+            "....WnnnnDdddDnnnnWEeeeeeeeE....",
+            "....WnnnnDdhdDnnnnWEeeeeeE......",
+            "....WnnnnDdddDnnnnWEeeeE........",
+            "....WnnnnDDDDDnnnnWEeE..........",
+            "....KKKKKKKKKKKKKKKE............",
+            "................................",
+            "................................",
             "................................",
         ],
         colors: [
-            "R": SpriteColors.roof,
-            "r": SpriteColors.roofDark,
-            "C": SpriteColors.chimney,
-            "c": SpriteColors.chimneyDark,
-            "W": SpriteColors.wallDark,
-            "n": SpriteColors.wall,
+            "R": SpriteColors.roof,           // south roof face
+            "r": SpriteColors.roofDark,       // east roof face (in shadow)
+            "W": SpriteColors.wallDark,       // south wall trim
+            "n": SpriteColors.wall,           // south wall body
+            "E": SpriteColors.plankDark,      // east wall trim
+            "e": SpriteColors.wallDark,       // east wall body (shaded cream)
             "X": SpriteColors.window,
             "D": SpriteColors.door,
             "d": SpriteColors.doorLight,
-            "h": SpriteColors.shopSign,  // gold doorknob
-            "K": SpriteColors.plankDark,
-            "x": SpriteColors.shadow,
+            "h": SpriteColors.shopSign,       // doorknob accent
+            "K": SpriteColors.plankDark,      // base trim
         ]
     )
 
