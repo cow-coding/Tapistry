@@ -199,30 +199,30 @@ private enum Sprites {
             "................................",
             "................................",
             "................................",
-            "...........cCCc.................",
-            "............CC..................",
-            "............CC..................",
-            "............CC..................",
-            "............CC..R...............",
-            "............CCrrRR..............",
-            "............CCrRRRRR............",
-            "..........rrrrrRRRRRRR..........",
-            "........rrrrrrRRRRRRRRRR........",
-            "....rrrrrrrrrRRRRRRRRRRRRRRR....",
-            "....EEEEEEEEEWWWWWWWWWWWWWWW....",
-            "....EeeeeeeeEWnnnnnnnnnnnnnW....",
-            "....EeeeeeeeEWnXXXnnnnnXXXnW....",
-            "....EeeeeeeeEWnXXXnnnnnXXXnW....",
-            "....EeeeeeeeEWnXXXnnnnnXXXnW....",
-            "....EeeeeeeeEWnnnnDDDDDnnnnW....",
-            "....EeeeeeeeEWnnnnDdddDnnnnW....",
-            "....EeeeeeeeEWnnnnDdhdDnnW......",
-            "....EeeeeeeeEWnnnnDDDDDW........",
-            "....EeeeeeeeEWnnnnnnnW..........",
-            "......EeeeeEWnnnnnW.............",
-            "........EeeeEWnnnW..............",
-            "..........EeEWnW................",
-            "............KK..................",
+            "................................",
+            "................................",
+            ".........cCCc...................",
+            "..........CC....................",
+            "..........CC....................",
+            "..........CC......R.............",
+            "..........CC....rrRRR...........",
+            "..........CC..rrrrRRRRR.........",
+            "..........CCrrrrrRRRRRRRRR......",
+            "..........CCrrrrrRRRRRRRRRRW....",
+            "........rrrrrrrrRRRRRRRRRWWn....",
+            "......rrrrrrrrrrRRRRRRRWWnnn....",
+            "....EErrrrrrrrrRRRRRRWWnnnnn....",
+            "....eeEErrrrrrrRRRRWWnnnnnnn....",
+            "....eeeeEErrrrRRRWWnnXXXnnnn....",
+            "....eeXXXeEErrRWWnnnnXXXnnnn....",
+            "....eeXXXeEErWWnnnnnnnnnnnnn....",
+            "....EeeeeeeeEWnnDDDnnnnnnnnW....",
+            "....EeeeeeeeEWnnDdDnnnnnW.......",
+            "....EeeeeeeeEWnnDhDnnnW.........",
+            "......EeeeeEWnnDdDnW............",
+            "........EeeeEWnnDDD.............",
+            "..........EeEWnnW...............",
+            "............EWW.................",
             "................................",
             "................................",
             "................................",
@@ -949,9 +949,9 @@ private struct TreePixelView: View {
 private struct HousePixelView: View {
     let size: CGFloat
 
-    // House grid 32×32. Chimney at cols 12-13, rows 4-10 (iso house with lowered peak).
+    // House grid 32×32. Chimney at cols 10-11, rows 6-13 (iso redesign, on east roof).
     private var pixelSize: CGFloat { size / 32 }
-    private var chimneyCenterX: CGFloat { pixelSize * 12.5 - size / 2 }
+    private var chimneyCenterX: CGFloat { pixelSize * 10.5 - size / 2 }
 
     var body: some View {
         ZStack {
