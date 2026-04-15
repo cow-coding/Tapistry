@@ -195,6 +195,25 @@ struct VillageTileView: View {
         return CGSize(width: x, height: y)
     }
 
+    /// Number of empty (dot-only) pixel rows at the bottom of each sprite's 32×32 grid.
+    /// Used to shift the rendered sprite down so its *visual* bottom — not the sprite's
+    /// bounding-box bottom — sits at the sub-cell iso anchor. Without this correction,
+    /// sprites with bottom padding (well, farm, fence) appear to float above the tile.
+    ///
+    /// Ground layers and billboards return 0 (they don't use the sub-cell baseline).
+    private func spriteBaselineRows(for building: BuildingType) -> Int {
+        switch building.id {
+        case "well":     return 9
+        case "farm":     return 10
+        case "fence":    return 5
+        case "windmill": return 3
+        case "house":    return 1
+        case "shop":     return 2
+        case "tree":     return 2
+        default:         return 0
+        }
+    }
+
     /// Iso Y-shear applied to each sprite.
     ///
     /// Negative b=-0.5 aligns the sprite's horizontal edges with the top-LEFT diamond
@@ -259,6 +278,7 @@ struct VillageTileView: View {
             ForEach(renderables) { item in
                 let off = subCellOffset(subRow: item.subRow, subCol: item.subCol)
                 let shear = isoShearY(for: item.building)
+                let baselineShift = CGFloat(spriteBaselineRows(for: item.building)) * subObjectSize / 32.0
                 BuildingPixelView(building: item.building, size: subObjectSize)
                     .transformEffect(
                         CGAffineTransform(a: 1, b: shear, c: 0, d: 1, tx: 0, ty: 0)
@@ -271,7 +291,13 @@ struct VillageTileView: View {
                         x: subObjectSize * 0.12,
                         y: subObjectSize * 0.06
                     )
-                    .offset(x: off.width, y: off.height - subObjectSize / 2)
+                    // Sub-cell anchor: the sprite's visual bottom (not bounding-box bottom)
+                    // lands at off.height. baselineShift pushes sprites with trailing empty
+                    // rows downward so content, not padding, sits on the iso anchor.
+                    .offset(
+                        x: off.width,
+                        y: off.height - subObjectSize / 2 + baselineShift
+                    )
                     .allowsHitTesting(false)
             }
 
