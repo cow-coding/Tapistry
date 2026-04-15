@@ -135,18 +135,60 @@ struct VillageGridView: View {
     }
 }
 
-/// A single tile with ground + object + decoration layers
+/// A single tile: grass block + whole-tile ground + 3×3 sub-cells of objects & decorations.
 struct VillageTileView: View {
     let tile: VillageTile
     let blockSize: CGFloat
     let isSelected: Bool
 
-    @State private var bounceScale: CGFloat = 1.0
     @State private var selectionPulse: Bool = false
 
     // GrassBlockView height = blockSize * 0.75; top face occupies top half
     // In a centered ZStack, the top face center sits at -blockSize/8 relative to ZStack center
     private var topFaceOffsetY: CGFloat { -blockSize / 8 }
+
+    // Iso geometry for the 3×3 sub-grid on top of the tile's top-face diamond.
+    // Each sub-cell is a mini diamond of size (blockSize/3 × blockSize/6).
+    // Half-step between sub-cells:
+    private var subStepX: CGFloat { blockSize / 6 }
+    private var subStepY: CGFloat { blockSize / 12 }
+    /// Y of the (row=0, col=0) sub-cell center, relative to ZStack center.
+    private var subOriginY: CGFloat { topFaceOffsetY - blockSize / 6 }
+    /// Rendered size of a sub-cell object sprite (intentionally larger than a sub-cell so
+    /// neighbors overlap slightly for a dense village feel).
+    private var subObjectSize: CGFloat { blockSize / 2 }
+
+    private struct Renderable: Identifiable {
+        let subRow: Int
+        let subCol: Int
+        let building: BuildingType
+        let isDecoration: Bool
+        var id: String { "\(subRow)-\(subCol)-\(isDecoration ? "d" : "o")" }
+        /// Lower z draws first (behind). Within the same sub-cell decoration goes on top.
+        var zOrder: Int { (subRow + subCol) * 2 + (isDecoration ? 1 : 0) }
+    }
+
+    private var renderables: [Renderable] {
+        var r: [Renderable] = []
+        for sr in 0..<VillageTile.subGridSize {
+            for sc in 0..<VillageTile.subGridSize {
+                let cell = tile.subCells[sr][sc]
+                if let oid = cell.object, let b = BuildingCatalog.find(oid) {
+                    r.append(Renderable(subRow: sr, subCol: sc, building: b, isDecoration: false))
+                }
+                if let did = cell.decoration, let b = BuildingCatalog.find(did) {
+                    r.append(Renderable(subRow: sr, subCol: sc, building: b, isDecoration: true))
+                }
+            }
+        }
+        return r.sorted { $0.zOrder < $1.zOrder }
+    }
+
+    private func subCellOffset(subRow: Int, subCol: Int) -> CGSize {
+        let x = CGFloat(subCol - subRow) * subStepX
+        let y = CGFloat(subCol + subRow) * subStepY + subOriginY
+        return CGSize(width: x, height: y)
+    }
 
     var body: some View {
         ZStack {
@@ -181,28 +223,17 @@ struct VillageTileView: View {
                     .onAppear { selectionPulse = true }
             }
 
-            // Object layer (tree, house, etc.) — Phase 2 reads center sub-cell;
-            // Phase 3 will iterate all 3×3 sub-cells.
-            if let objectId = tile.centerSubCell.object,
-               let building = BuildingCatalog.find(objectId) {
-                BuildingPixelView(building: building, size: blockSize)
-                    .offset(y: -blockSize / 4)
-                    .shadow(color: .black.opacity(0.4), radius: 2, x: 0, y: 2)
-                    .scaleEffect(bounceScale)
-                    .allowsHitTesting(false)  // Don't block tile taps
-                    .onChange(of: objectId) { _ in
-                        bounceScale = 0.1
-                        withAnimation(.spring(response: 0.45, dampingFraction: 0.55)) {
-                            bounceScale = 1.0
-                        }
-                    }
-            }
-
-            // Decoration layer — sits on top of object (center sub-cell until Phase 3)
-            if let decorationId = tile.centerSubCell.decoration,
-               let building = BuildingCatalog.find(decorationId) {
-                DecorationLayerView(building: building, blockSize: blockSize)
-                    .offset(y: -blockSize / 4)
+            // Sub-cell contents — objects and decorations painted back-to-front.
+            //
+            // Each sprite's BOTTOM sits on its sub-cell center so sprites appear to stand
+            // on that cell. Since .offset moves the sprite's frame center, we subtract
+            // half the sprite height from the cell center y.
+            ForEach(renderables) { item in
+                let off = subCellOffset(subRow: item.subRow, subCol: item.subCol)
+                BuildingPixelView(building: item.building, size: subObjectSize)
+                    .shadow(color: .black.opacity(item.isDecoration ? 0.25 : 0.4),
+                            radius: item.isDecoration ? 1.5 : 2, x: 0, y: 1.5)
+                    .offset(x: off.width, y: off.height - subObjectSize / 2)
                     .allowsHitTesting(false)
             }
         }
