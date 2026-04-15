@@ -846,14 +846,14 @@ private struct GroundPixelView: View {
 // MARK: - Flowers (wind sway)
 
 /// Flowers ground layer that sways left-right as one unit, like a patch
-/// of meadow being blown by a light breeze. Period ≈ 2.4 s, amplitude
-/// ±6% of sprite width.
+/// of meadow in a gentle breeze (산들바람). Period ≈ 5 s, amplitude
+/// ±4% of sprite width — slow and subtle.
 private struct FlowersGroundView: View {
     let size: CGFloat
     var body: some View {
         TimelineView(.animation(minimumInterval: 1.0 / 30.0, paused: false)) { ctx in
             let t = ctx.date.timeIntervalSinceReferenceDate
-            let offsetX = 0.06 * size * sin(t * 2.0 * .pi / 2.4)
+            let offsetX = 0.04 * size * sin(t * 2.0 * .pi / 5.0)
             GroundPixelView(art: Sprites.flowersGround, size: size)
                 .offset(x: offsetX)
         }
