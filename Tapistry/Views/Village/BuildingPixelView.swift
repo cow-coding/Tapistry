@@ -807,11 +807,11 @@ struct BuildingPixelView: View {
         case "house":      HousePixelView(size: size)
         case "windmill":   WindmillPixelView(size: size)
         case "well":       PixelSpriteView(art: Sprites.well, width: size)
-        case "farm":       PixelSpriteView(art: Sprites.farm, width: size)
+        case "farm":       FarmPixelView(size: size)
         case "shop":       PixelSpriteView(art: Sprites.shop, width: size)
         case "fence":      PixelSpriteView(art: Sprites.fence, width: size)
         case "lamp":       LampPixelView(size: size)
-        case "flowers":    GroundPixelView(art: Sprites.flowersGround, size: size)
+        case "flowers":    FlowersGroundView(size: size)
         case "stone_path": GroundPixelView(art: Sprites.stonePathGround, size: size)
         default:
             // Fallback to emoji for any unexpected id
@@ -831,6 +831,38 @@ private struct GroundPixelView: View {
         PixelSpriteView(art: art, width: size)
             .frame(width: size, height: size / 2)  // top face aspect
             .clipShape(DiamondMask())
+    }
+}
+
+// MARK: - Flowers (gentle breathing scale)
+
+/// Flowers ground layer with a sin-wave scale pulse — makes the petals "breathe"
+/// subtly so they don't feel static. Period ≈ 3.2 s, amplitude ±4%.
+private struct FlowersGroundView: View {
+    let size: CGFloat
+    var body: some View {
+        TimelineView(.animation(minimumInterval: 1.0 / 30.0, paused: false)) { ctx in
+            let t = ctx.date.timeIntervalSinceReferenceDate
+            let scale = 1.0 + 0.04 * sin(t * 2.0 * .pi / 3.2)
+            GroundPixelView(art: Sprites.flowersGround, size: size)
+                .scaleEffect(scale)
+        }
+    }
+}
+
+// MARK: - Farm (gentle wind sway)
+
+/// Farm crop with a small rotation wave — reads as wind catching the sprouts.
+/// Period ≈ 2.6 s, amplitude ±1.2°.
+private struct FarmPixelView: View {
+    let size: CGFloat
+    var body: some View {
+        TimelineView(.animation(minimumInterval: 1.0 / 30.0, paused: false)) { ctx in
+            let t = ctx.date.timeIntervalSinceReferenceDate
+            let deg = 1.2 * sin(t * 2.0 * .pi / 2.6)
+            PixelSpriteView(art: Sprites.farm, width: size)
+                .rotationEffect(.degrees(deg), anchor: .bottom)
+        }
     }
 }
 
