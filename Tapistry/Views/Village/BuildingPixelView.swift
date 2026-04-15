@@ -665,6 +665,68 @@ private enum Sprites {
             "p": SpriteColors.shadow,
         ]
     )
+
+    // MARK: Logo house (32×32) — used in Welcome step 1
+
+    static let logoHouse = PixelArt(
+        rows: [
+            "................................",
+            "................................",
+            "................................",
+            "................................",
+            "................................",
+            "................................",
+            "...............RR...............",
+            "..............RrRR..............",
+            ".............RrrrRR.............",
+            "............RrrrrrRR............",
+            "...........RrrrrrrrRR...........",
+            "..........RrrrrrrrrrRR..........",
+            ".........RrrrrrrrrrrrRR.........",
+            "........RrrrrrrrrrrrrrRR........",
+            ".......RrrrrrrrrrrrrrrrRR.......",
+            "......RrrrrrrrrrrrrrrrrrRR......",
+            ".....RRRRRRRRRRRRRRRRRRRRRR.....",
+            ".....BBBBBBBBBBBBBBBBBBBBBB.....",
+            "......WWWWWWWWWWWWWWWWWWWW......",
+            "......WwwwwwwwwwwwwwwwwwwW......",
+            "......WwXXxxwwwwwwwwxXXwwW......",
+            "......WwXXxxwwwwwwwwxXXwwW......",
+            "......WwXXxxwwwwwwwwxXXwwW......",
+            "......WwwwwwwwwwwwwwwwwwwW......",
+            "......WwwwwwwwwDDDDwwwwwwW......",
+            "......WwwwwwwwDDDDDDwwwwwW......",
+            "......WwwwwwwwDDDDDDwwwwwW......",
+            "......WwwwwwwwDDdDDDwwwwwW......",
+            "......WwwwwwwwDDDDDDwwwwwW......",
+            "......BBBBBBBBBBBBBBBBBBBB......",
+            ".....gGgGGgGGGgGGgGGGgGGgg......",
+            "....gggggggggggggggggggggggg....",
+        ],
+        colors: [
+            "R": SpriteColors.leafDark,
+            "r": SpriteColors.leaf,
+            "B": SpriteColors.barkDark,
+            "W": SpriteColors.wallLight,
+            "w": SpriteColors.wall,
+            "X": SpriteColors.windowDark,
+            "x": SpriteColors.window,
+            "D": SpriteColors.door,
+            "d": SpriteColors.doorLight,
+            "G": SpriteColors.grass,
+            "g": SpriteColors.grassDark,
+        ]
+    )
+}
+
+// MARK: - Public sprite wrappers (for non-building UI like Welcome / LevelUp)
+
+/// 32×32 Tapistry brand logo house. Used on the Welcome onboarding step 1.
+struct LogoHouseView: View {
+    let size: CGFloat
+    var body: some View {
+        PixelSpriteView(art: Sprites.logoHouse, width: size)
+    }
 }
 
 // MARK: - Isometric diamond shape (for ground clipping)
