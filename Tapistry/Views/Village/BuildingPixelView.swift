@@ -119,6 +119,19 @@ enum SpriteColors {
     static let shopSign     = Color(red: 0.82, green: 0.68, blue: 0.36)
     static let shopSignDark = Color(red: 0.50, green: 0.38, blue: 0.18)
 
+    // Cafe
+    static let cafeRoof      = Color(red: 0.35, green: 0.45, blue: 0.39) // deep sage trim
+    static let cafeRoofLight = Color(red: 0.63, green: 0.72, blue: 0.64) // soft sage top
+    static let cafeWall      = Color(red: 0.95, green: 0.92, blue: 0.85) // plaster cream
+    static let cafeWallDark  = Color(red: 0.75, green: 0.69, blue: 0.58)
+    static let cafeUpper     = Color(red: 0.84, green: 0.88, blue: 0.82)
+    static let cafeUpperDark = Color(red: 0.58, green: 0.64, blue: 0.57)
+    static let cafeSign      = Color(red: 0.91, green: 0.58, blue: 0.36) // coral accent
+    static let cafeSignDark  = Color(red: 0.52, green: 0.27, blue: 0.19)
+    static let cafeLetter    = Color(red: 0.99, green: 0.96, blue: 0.90)
+    static let cafeGlass     = Color(red: 0.53, green: 0.73, blue: 0.76)
+    static let cafeGlassDark = Color(red: 0.33, green: 0.52, blue: 0.56)
+
     // Water (well)
     static let water        = Color(red: 0.22, green: 0.42, blue: 0.64)
     static let waterDark    = Color(red: 0.14, green: 0.28, blue: 0.44)
@@ -594,6 +607,27 @@ private enum Sprites {
         ]
     )
 
+    // MARK: Cafe (48×48)
+
+    /// Cafe (카페) — reset baseline.
+    /// Start again from the validated single-mass 48×48 geometry.
+    static let cafe = PixelArt(
+        rows: shop.rows,
+        colors: [
+            "T": SpriteColors.cafeRoofLight,
+            "A": SpriteColors.cafeRoof,
+            "K": SpriteColors.cafeSignDark,
+            "b": SpriteColors.cafeSign,
+            "E": SpriteColors.cafeWallDark,
+            "e": SpriteColors.cafeWall,
+            "W": SpriteColors.cafeWallDark,
+            "n": SpriteColors.cafeWall,
+            "X": SpriteColors.cafeGlass,
+            "D": SpriteColors.cafeSignDark,
+            "d": SpriteColors.cafeSign,
+        ]
+    )
+
     // MARK: Flowers ground (32×32, tileable)
 
     static let flowersGround = PixelArt(
@@ -920,14 +954,14 @@ struct BuildingPixelView: View {
         case "house":       HousePixelView(size: size)
         case "windmill":    WindmillPixelView(size: size)
         case "shop":        ShopPixelView(size: size)
+        case "cafe":        PixelSpriteView(art: Sprites.cafe, width: size)
         case "fence":       PixelSpriteView(art: Sprites.fence, width: size)
         case "lamp":        LampPixelView(size: size)
         case "flowers":     FlowersGroundView(size: size)
         case "stone_path":  GroundPixelView(art: Sprites.stonePathGround, size: size)
         case "street_tree": StreetTreePixelView(size: size)
         // New buildings — emoji fallback until sprites are drawn
-        case "cafe", "cityhall",
-             "apartment", "hotel", "skyscraper":
+        case "cityhall", "apartment", "hotel", "skyscraper":
             Text(building.emoji).font(.system(size: size * 0.6))
         default:
             // Fallback to emoji for any unexpected id

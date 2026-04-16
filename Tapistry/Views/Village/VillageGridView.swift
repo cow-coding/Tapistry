@@ -209,7 +209,7 @@ struct VillageTileView: View {
         case "fence":    return 6   // iso redraw: content rows 9-25, rows 26-31 empty
         case "windmill": return 3
         case "house":    return 4   // 48×48 sprite: 6 empty trailing rows × (32/48) = 4
-        case "cafe":     return 7   // 48×48 sprite: 11 empty trailing rows × (32/48) ≈ 7
+        case "cafe":     return 4   // align with other 48×48 building anchors (shop/house)
         case "shop":     return 4   // 48×48 sprite: 6 empty rows × (32/48) scale = 4
         case "tree":       return 12  // 48×48 sprite: 18 empty trailing rows × (32/48) = 12
         case "street_tree": return 13 // 48×48 sprite: 19 empty trailing rows × (32/48) ≈ 13
