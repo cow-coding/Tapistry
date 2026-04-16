@@ -206,7 +206,7 @@ struct VillageTileView: View {
         switch building.id {
         // well removed from catalog
         // farm removed from catalog
-        case "fence":    return 6   // iso redraw: content rows 9-25, rows 26-31 empty
+        case "fence":    return 8   // 48×48 sprite: 12 empty trailing rows × (32/48) = 8
         case "windmill": return 3
         case "house":    return 4   // 48×48 sprite: 6 empty trailing rows × (32/48) = 4
         case "cafe":     return 4   // align with other 48×48 building anchors (shop/house)
@@ -286,6 +286,7 @@ struct VillageTileView: View {
                 let off = subCellOffset(subRow: item.subRow, subCol: item.subCol)
                 let shear = isoShearY(for: item.building)
                 let baselineShift = CGFloat(spriteBaselineRows(for: item.building)) * subObjectSize / 32.0
+                let isDecor = item.building.layer == .decoration && item.building.id != "fence"
                 BuildingPixelView(building: item.building, size: subObjectSize)
                     .transformEffect(
                         CGAffineTransform(a: 1, b: shear, c: 0, d: 1, tx: 0, ty: 0)
@@ -298,10 +299,11 @@ struct VillageTileView: View {
                         x: subObjectSize * 0.12,
                         y: subObjectSize * 0.06
                     )
-                    // Sub-cell anchor: shifted left + forward from center.
+                    // Decorations: centered on sub-cell.
+                    // Buildings/fence: shifted forward from center.
                     .offset(
-                        x: off.width - blockSize / 16,
-                        y: off.height + blockSize / 16 - subObjectSize / 2 + baselineShift
+                        x: off.width + (isDecor ? 0 : item.building.id == "fence" ? blockSize / 32 : -blockSize / 16),
+                        y: off.height + (isDecor ? 0 : item.building.id == "fence" ? blockSize / 10 : blockSize / 16) - subObjectSize / 2 + baselineShift
                     )
                     .allowsHitTesting(false)
             }
