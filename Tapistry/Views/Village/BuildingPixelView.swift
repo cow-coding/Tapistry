@@ -178,6 +178,51 @@ private enum Sprites {
         ]
     )
 
+    /// Street tree (가로수) — taller and narrower than the regular tree.
+    /// Columnar canopy like a cypress or ornamental street planting.
+    static let streetTree = PixelArt(
+        rows: [
+            "................................",
+            "................................",
+            "................................",
+            "................................",
+            "................................",
+            "................................",
+            "..............GG................",
+            ".............GGGG...............",
+            ".............GLGG...............",
+            "............GGLGGG..............",
+            "............GGLLGG..............",
+            "............GGGGGG..............",
+            "............GGGGGG..............",
+            ".............GGGG...............",
+            ".............gGGg...............",
+            "..............gg................",
+            "..............BB................",
+            "..............BB................",
+            "..............BB................",
+            "..............BB................",
+            "..............BB................",
+            "................................",
+            "................................",
+            "................................",
+            "................................",
+            "................................",
+            "................................",
+            "................................",
+            "................................",
+            "................................",
+            "................................",
+            "................................",
+        ],
+        colors: [
+            "G": SpriteColors.leaf,
+            "g": SpriteColors.leafDark,
+            "L": SpriteColors.leafLight,
+            "B": SpriteColors.bark,
+        ]
+    )
+
     // MARK: House (32×32)
 
     /// Iso house — horizontally mirrored from the first POC so the door-face (south)
@@ -812,8 +857,9 @@ struct BuildingPixelView: View {
         case "lamp":        LampPixelView(size: size)
         case "flowers":     FlowersGroundView(size: size)
         case "stone_path":  GroundPixelView(art: Sprites.stonePathGround, size: size)
+        case "street_tree": StreetTreePixelView(size: size)
         // New buildings — emoji fallback until sprites are drawn
-        case "cafe", "cityhall", "street_tree",
+        case "cafe", "cityhall",
              "apartment", "hotel", "skyscraper":
             Text(building.emoji).font(.system(size: size * 0.6))
         default:
@@ -991,6 +1037,27 @@ private struct TreePixelView: View {
             .onAppear {
                 withAnimation(.easeInOut(duration: 5.0).repeatForever(autoreverses: true)) {
                     sway = 1.5
+                }
+            }
+    }
+}
+
+// MARK: - Street Tree (gentle breeze sway)
+
+/// Taller columnar street tree — same breeze sway as regular tree.
+private struct StreetTreePixelView: View {
+    let size: CGFloat
+    @State private var sway: Double = 0
+
+    var body: some View {
+        PixelSpriteView(art: Sprites.streetTree, width: size)
+            .rotationEffect(
+                .degrees(sway),
+                anchor: .init(x: 0.5, y: 0.68)
+            )
+            .onAppear {
+                withAnimation(.easeInOut(duration: 4.5).repeatForever(autoreverses: true)) {
+                    sway = 1.2
                 }
             }
     }
