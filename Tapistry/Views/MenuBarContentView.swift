@@ -96,6 +96,8 @@ struct MenuBarContentView: View {
             Text("\(village.cash)")
                 .font(.system(size: 11, weight: .bold, design: .rounded))
                 .foregroundColor(.yellow)
+                .contentTransition(.numericText())
+                .animation(.spring(duration: 0.3), value: village.cash)
             Text(L10n.coins.resolve(lang))
                 .font(.system(size: 9))
                 .foregroundColor(.secondary)
