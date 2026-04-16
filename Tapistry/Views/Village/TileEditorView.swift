@@ -15,7 +15,7 @@ struct TileEditorView: View {
 
     /// Snapshot of the tile taken on appear so Cancel can restore it.
     @State private var snapshot: VillageTile? = nil
-    @State private var selectedSub: (Int, Int) = (1, 1)
+    @State private var selectedSub: (Int, Int)? = (1, 1)
     @State private var layer: TileLayer = .object
 
     private var lang: AppLanguage { settings.language }
@@ -140,6 +140,12 @@ struct TileEditorView: View {
                 width: editorBlockSize,
                 height: editorBlockSize * 0.75 + 8
             )
+            .background(
+                // Tap outside the diamond to deselect sub-cell
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture { selectedSub = nil }
+            )
             Spacer()
         }
     }
@@ -147,6 +153,14 @@ struct TileEditorView: View {
     // MARK: - Sub-cell caption + layer tabs
 
     private var subCellCaption: some View {
+        guard let sel = selectedSub else {
+            return AnyView(
+                Text(L10n.tapSubCell.resolve(lang))
+                    .font(.system(size: 10))
+                    .foregroundColor(.secondary)
+            )
+        }
+
         let currentId = currentSubCellId()
         let label: String = {
             if let id = currentId, let b = BuildingCatalog.find(id) {
@@ -155,8 +169,8 @@ struct TileEditorView: View {
             return L10n.tapSubCell.resolve(lang)
         }()
 
-        return HStack(spacing: 6) {
-            Text("\(L10n.subCellLabel.resolve(lang)) (\(selectedSub.0 + 1), \(selectedSub.1 + 1))")
+        return AnyView(HStack(spacing: 6) {
+            Text("\(L10n.subCellLabel.resolve(lang)) (\(sel.0 + 1), \(sel.1 + 1))")
                 .font(.system(size: 10, weight: .semibold))
                 .foregroundColor(.secondary)
             Text("—")
@@ -164,7 +178,7 @@ struct TileEditorView: View {
             Text(label)
                 .font(.system(size: 10))
                 .foregroundColor(.primary)
-        }
+        })
     }
 
     private var layerTabs: some View {
@@ -193,19 +207,25 @@ struct TileEditorView: View {
         let currentId = currentSubCellId()
 
         return Group {
-            if unlocked.isEmpty {
+            if selectedSub == nil {
+                Text(L10n.tapSubCell.resolve(lang))
+                    .font(.system(size: 10))
+                    .foregroundColor(.secondary)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+            } else if unlocked.isEmpty {
                 Text(L10n.noUnlocked.resolve(lang))
                     .font(.system(size: 10))
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 12)
-            } else {
+            } else if let sel = selectedSub {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 50), spacing: 6)], spacing: 6) {
                     if currentId != nil {
                         Button {
                             village.removeSubCell(
                                 row: row, col: col,
-                                subRow: selectedSub.0, subCol: selectedSub.1,
+                                subRow: sel.0, subCol: sel.1,
                                 layer: layer
                             )
                         } label: {
@@ -223,7 +243,7 @@ struct TileEditorView: View {
                             village.placeSubCell(
                                 b,
                                 row: row, col: col,
-                                subRow: selectedSub.0, subCol: selectedSub.1,
+                                subRow: sel.0, subCol: sel.1,
                                 layer: layer
                             )
                         } label: {
@@ -305,7 +325,8 @@ struct TileEditorView: View {
     }
 
     private func currentSubCellId() -> String? {
-        let cell = tile.subCells[selectedSub.0][selectedSub.1]
+        guard let sel = selectedSub else { return nil }
+        let cell = tile.subCells[sel.0][sel.1]
         switch layer {
         case .ground: return nil  // ground is tile-wide
         case .object: return cell.object
