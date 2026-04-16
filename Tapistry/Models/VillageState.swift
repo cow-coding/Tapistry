@@ -4,6 +4,7 @@ import Combine
 /// Central state for the village system
 final class VillageState: ObservableObject {
     @Published var xp: Int = 0
+    @Published var cash: Int = 0
     @Published var grid: [[VillageTile]]
 
     let gridSize = 4
@@ -85,6 +86,21 @@ final class VillageState: ObservableObject {
             onLevelUp?(before, after, unlocked)
         }
         scheduleSave()
+    }
+
+    // MARK: - Cash
+
+    func addCash(_ amount: Int) {
+        cash += amount
+        scheduleSave()
+    }
+
+    @discardableResult
+    func spendCash(_ amount: Int) -> Bool {
+        guard cash >= amount else { return false }
+        cash -= amount
+        scheduleSave()
+        return true
     }
 
     #if DEBUG
@@ -210,11 +226,12 @@ final class VillageState: ObservableObject {
 
     private struct SaveData: Codable {
         let xp: Int
+        var cash: Int = 0       // default for migration — old saves without cash decode to 0
         let grid: [[VillageTile]]
     }
 
     func save() {
-        let data = SaveData(xp: xp, grid: grid)
+        let data = SaveData(xp: xp, cash: cash, grid: grid)
         if let encoded = try? JSONEncoder().encode(data) {
             try? encoded.write(to: saveURL, options: .atomic)
         }
@@ -225,6 +242,7 @@ final class VillageState: ObservableObject {
               let decoded = try? JSONDecoder().decode(SaveData.self, from: data)
         else { return }
         xp = decoded.xp
+        cash = decoded.cash
         if decoded.grid.count == gridSize && decoded.grid.allSatisfy({ $0.count == gridSize }) {
             grid = decoded.grid
         }
