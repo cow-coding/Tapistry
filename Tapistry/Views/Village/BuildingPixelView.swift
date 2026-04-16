@@ -541,6 +541,7 @@ private enum Sprites {
     /// Convenience store / supermarket (편의점) — 48×48 hi-res iso building.
     /// Flat roof with red perimeter trim, brown sign band with text dots,
     /// blue glass storefront with cream columns, door reaching ground.
+    /// Rooftop sign (K background + n letter pixels) added on the right side.
     static let shop = PixelArt(
         rows: [
             "................................................",
@@ -555,28 +556,28 @@ private enum Sprites {
             "................................................",
             "................................................",
             "................................................",
-            "................................................",
-            "................................................",
-            "............................A...................",
-            "..........................AATAA.................",
-            "........................AATTTTTAA...............",
-            "......................AATTTTTTTTTAA.............",
-            "....................AATTTTTTTTTTTTTAA...........",
-            "..................AATTTTTTTTTTTTTTTTTAA.........",
-            "................AATTTTTTTTTTTTTTTTTTTTTAAA......",
-            "..............AATTTTTTTTTTTTTTTTTTTTTTAAAK......",
-            "............AATTTTTTTTTTTTTTTTTTTTTTAAAKbK......",
-            "..........AATTTTTTTTTTTTTTTTTTTTTTAAAKKKKX......",
-            "........AATTTTTTTTTTTTTTTTTTTTTTAAAKbKbXXX......",
-            "......EEATTTTTTTTTTTTTTTTTTTTTAAAKKKKnXXXX......",
-            "......EeEEATTTTTTTTTTTTTTTTTAAAKbKbXXnXXXX......",
-            "......EeeeEEATTTTTTTTTTTTTAAAKKKKXXXXnXXXX......",
-            "......EeeeeeEEATTTTTTTTTAAAKbKbnXXXXXnXXXX......",
-            "......EeeeeeeeEEATTTTTAAAKKKKDDnXXXXXnXXXn......",
-            "......EeeeeeeeeeEEATAAAKbKbXDdDnXXXXXnXnnn......",
-            "......EeeeeeeeeeeeEAAKKKKnXXDdDnXXXXXnnnn.......",
-            "......EeeeeeeeeeeeEKbKbXXnXXDdDnXXXnnnn.........",
-            "......EeeeeeeeeeeeEKKXXXXnXXDdDnXnnnn...........",
+            ".......................................KKK......",
+            "....................................KKKnKK......",
+            "............................A......KKKnKnK......",
+            "..........................AATAA...KKKnKKnK......",
+            "........................AATTTTTAKKKKKnKnKK......",
+            "......................AATTTTTTTKKnnKKnnKKK......",
+            "....................AATTTTTTTTKKKnKnKnKKKK......",
+            "..................AATTTTTTTTTKKKnKKnKnKKKK......",
+            "................AATTTTTTTTTKnKKKnKKnKnKKbn......",
+            "..............AATTTTTTTTTKKKnKKKKnKnKKKbXn......",
+            "............AATTTTTTTTTTKKKKnnnnKnKnKKbXXn......",
+            "..........AATTTTTTTTTTKKKKKKnKKnKnnKXnXXXn......",
+            "........AATTTTTTTTTTKKKnnKKKnKKnKKKXXnXXXn......",
+            "......EEATTTTTTTTTTKKKnKKKKKnKKnKKXXXnXXXn......",
+            "......EeEEATTTTTTTTKKKnKnnKKKnKKbXXXXnXXXn......",
+            "......EeeeEEATTTTTTKKKnnKKnKKDDKXXXXXnXXXn......",
+            "......EeeeeeEEATTTTKKKKKKnnKDDDnXXXXXnXXXn......",
+            "......EeeeeeeeEEATTKKKKKnKKXDDDnXXXXXnXXXn......",
+            "......EeeeeeeeeeEEAKKKKnKKXXDdDnXXXXXnXnnn......",
+            "......EeeeeeeeeeeeEKKKKKXnXXDdDnXXXXXnnnn.......",
+            "......EeeeeeeeeeeeEKKXXXXnXXDdDnXXXnnnn.........",
+            "......EeeeeeeeeeeeEKXXXXXnXXDdDnXnnnn...........",
             "......EeeeeeeeeeeeEnXXXXXnXXDdDnnnn.............",
             "......EEeeeeeeeeeeEnXXXXXnXXDdDnn...............",
             "........EEeeeeeeeeEnXXXXXnXnDdD.................",
@@ -609,10 +610,58 @@ private enum Sprites {
 
     // MARK: Cafe (48×48)
 
-    /// Cafe (카페) — reset baseline.
-    /// Start again from the validated single-mass 48×48 geometry.
+    /// Cafe (카페) — 2F terrace + rooftop coffee cup sign.
     static let cafe = PixelArt(
-        rows: shop.rows,
+        rows: [
+            "................................................",
+            "................................................",
+            "................................................",
+            "................................................",
+            "................................................",
+            "................................................",
+            "............................A...................",
+            "...........................AAA..................",
+            ".........................AATTTA.................",
+            "........................ATTTTTTAA...............",
+            "......................AATTTTTTTTTA..............",
+            ".....................ATTTTTTTTTTAAA.............",
+            "....................AAATTTTTTTTAAKE.............",
+            "....................EeATTTTTTAAKKKE.............",
+            "....................EeeAAATTAAKKKeE.............",
+            "....................EeeeeAAAAKKeeeE.............",
+            "....................EeeeeeEKKKdAAeE.............",
+            "....................EeeeeeEKKddddAE.............",
+            "....................EeeeeeEdddddddEAA...........",
+            ".............nnnnnnATEeeeeEdddddddTTTAA.........",
+            ".............nnnnnnKKTEEeeEdddddTTTTTTTAAA......",
+            ".............nnnnnnTKTTEEeEbdddTTTTTTTAAAK......",
+            "............AnnnnnnKKTTTTEEbdTTTTTTTAAAKbK......",
+            "..........AATnnnnnnTTTTTTTETTTTTTTAAAKKKKX......",
+            "........AATTbbbbbbbbTTTTTTTTTTTTAAAKbKbXXX......",
+            "......EEATTTTbbbbbbTTTTTTTTTTTAAAKKKKnXXXX......",
+            "......EeEEATTTTTTTTTTTTTTTTTAAAKbKbXXnXXXX......",
+            "......EeeeEEATTTTTTTTTTTTTAAAKKKKXXXXnXXXX......",
+            "......EeeeeeEEATTTTTTTTTAAAKbKbnXXXXXnXXXX......",
+            "......EeeeeeeeEEATTTTTAAAKKKKDDnXXXXXnXXXn......",
+            "......EeeeeeeeeeEEATAAAKbKbXDdDnXXXXXnXnnn......",
+            "......EeeeeeeeeeeeEAAKKKKnXXDdDnXXXXXnnnn.......",
+            "......EeeeeeeeeeeeEKbKbXXnXXDdDnXXXnnnn.........",
+            "......EeeeeeeeeeeeEKKXXXXnXXDdDnXnnnn...........",
+            "......EeeeeeeeeeeeEnXXXXXnXXDdDnnnn.............",
+            "......EEeeeeeeeeeeEnXXXXXnXXDdDnn...............",
+            "........EEeeeeeeeeEnXXXXXnXnDdD.................",
+            "..........EEeeeeeeEnXXXXXnnnD...................",
+            "............EEeeeeEnXXXnnnn.....................",
+            "..............EEeeEnXnnnn.......................",
+            "................EEEnnnn.........................",
+            "..................Enn...........................",
+            "................................................",
+            "................................................",
+            "................................................",
+            "................................................",
+            "................................................",
+            "................................................"
+        ],
         colors: [
             "T": SpriteColors.cafeRoofLight,
             "A": SpriteColors.cafeRoof,
@@ -827,7 +876,7 @@ private enum Sprites {
             "...G....G...G..G...G.G..G.G.....",
             "...G....G...G..G...G.GGG..G.....",
             "...G....G...G..G...G.G....G.....",
-            "...G.....G.G..G...G.G...........",
+            "...G.....G.G...G...G.G..........",
             "...GGGG...G.....GGG..G....G.....",
             "................................",
             "................................",
@@ -954,7 +1003,7 @@ struct BuildingPixelView: View {
         case "house":       HousePixelView(size: size)
         case "windmill":    WindmillPixelView(size: size)
         case "shop":        ShopPixelView(size: size)
-        case "cafe":        PixelSpriteView(art: Sprites.cafe, width: size)
+        case "cafe":        CafePixelView(size: size)
         case "fence":       PixelSpriteView(art: Sprites.fence, width: size)
         case "lamp":        LampPixelView(size: size)
         case "flowers":     FlowersGroundView(size: size)
@@ -1157,6 +1206,33 @@ private struct StreetTreePixelView: View {
                     sway = 1.2
                 }
             }
+    }
+}
+
+// MARK: - Cafe (coffee steam)
+
+private struct CafePixelView: View {
+    let size: CGFloat
+
+    // Cup center: cols 13-18, roughly col 16 center. Cup top at row 19.
+    private var pixelSize: CGFloat { size / 48 }
+    private var cupCenterX: CGFloat { pixelSize * 16.0 - size / 2 }
+
+    var body: some View {
+        ZStack {
+            PixelSpriteView(art: Sprites.cafe, width: size)
+
+            ForEach(0..<3, id: \.self) { i in
+                SmokePuff(
+                    baseOffsetX: cupCenterX,
+                    travelHeight: size * 0.25,
+                    puffSize: pixelSize * 1.8,
+                    phaseOffset: Double(i) * 0.33,
+                    topOfHouseY: -size / 2 + pixelSize * 14
+                )
+            }
+        }
+        .frame(width: size, height: size)
     }
 }
 
