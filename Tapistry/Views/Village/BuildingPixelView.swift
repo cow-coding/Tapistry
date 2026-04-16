@@ -211,7 +211,7 @@ private enum Sprites {
             "....EeeeeeeeEWnnDDDnnnnnnnnW....",
             "....EeeeeeeeEWnnDdDnnnnnW.......",
             "....EeeeeeeeEWnnDhDnnnW.........",
-            "......EeeeeEWnnDdDnW............",
+            "......EeeeeeEWnnDdDnW...........",
             "........EeeeEWnnDDD.............",
             "..........EeEWnnW...............",
             "............EWW.................",
