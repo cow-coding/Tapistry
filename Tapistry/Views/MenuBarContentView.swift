@@ -3,6 +3,9 @@ import SwiftUI
 struct MenuBarContentView: View {
     @ObservedObject var appState: AppState
     @ObservedObject var settings = AppSettings.shared
+    /// Observe village directly so cashBar/xpBar re-render immediately
+    /// when cash or xp changes (appState doesn't re-publish nested changes).
+    @ObservedObject var village: VillageState
 
     @State private var isSettingsHovering = false
     @State private var isQuitHovering = false
@@ -20,7 +23,7 @@ struct MenuBarContentView: View {
                 permissionBanner
             }
 
-            VillageGridView(village: appState.village)
+            VillageGridView(village: village)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
 
@@ -50,7 +53,7 @@ struct MenuBarContentView: View {
 
     private var xpBar: some View {
         HStack(spacing: 8) {
-            Text("Lv.\(appState.village.level)")
+            Text("Lv.\(village.level)")
                 .font(.system(size: 12, weight: .heavy, design: .rounded))
                 .foregroundColor(.orange)
 
@@ -66,13 +69,13 @@ struct MenuBarContentView: View {
                                 endPoint: .trailing
                             )
                         )
-                        .frame(width: geo.size.width * appState.village.levelProgress)
+                        .frame(width: geo.size.width * village.levelProgress)
                 }
             }
             .frame(height: 6)
 
-            if let nextXP = appState.village.xpForNextLevel {
-                Text("\(appState.village.xp)/\(nextXP)")
+            if let nextXP = village.xpForNextLevel {
+                Text("\(village.xp)/\(nextXP)")
                     .font(.system(size: 9, weight: .medium, design: .monospaced))
                     .foregroundColor(.secondary)
             } else {
@@ -90,7 +93,7 @@ struct MenuBarContentView: View {
             Image(systemName: "dollarsign.circle.fill")
                 .font(.system(size: 11))
                 .foregroundColor(.yellow)
-            Text("\(appState.village.cash)")
+            Text("\(village.cash)")
                 .font(.system(size: 11, weight: .bold, design: .rounded))
                 .foregroundColor(.yellow)
             Text(L10n.coins.resolve(lang))
