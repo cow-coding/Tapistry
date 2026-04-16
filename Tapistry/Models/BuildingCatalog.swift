@@ -19,8 +19,7 @@ struct BuildingCatalog {
         BuildingType(id: "tree",       name: LocalizedString("Tree",       ko: "나무"),   emoji: "🌳", layer: .object,     unlockLevel: 1,  animated: true),
         BuildingType(id: "house",      name: LocalizedString("House",      ko: "나무집"), emoji: "🏠", layer: .object,     unlockLevel: 5,  animated: true),
         BuildingType(id: "well",       name: LocalizedString("Well",       ko: "우물"),   emoji: "🪣", layer: .object,     unlockLevel: 10, animated: true),
-        BuildingType(id: "farm",       name: LocalizedString("Farm",       ko: "텃밭"),   emoji: "🌱", layer: .object,     unlockLevel: 12, animated: true),
-        BuildingType(id: "shop",       name: LocalizedString("Shop",       ko: "상점"),   emoji: "🏪", layer: .object,     unlockLevel: 15, animated: true),
+        BuildingType(id: "shop",       name: LocalizedString("Shop",       ko: "상점"),   emoji: "🏪", layer: .object,     unlockLevel: 12, animated: true),
         BuildingType(id: "windmill",   name: LocalizedString("Windmill",   ko: "풍차"),   emoji: "🌾", layer: .object,     unlockLevel: 20, animated: true),
 
         // Decorations

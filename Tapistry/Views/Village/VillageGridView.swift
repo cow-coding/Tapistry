@@ -204,7 +204,7 @@ struct VillageTileView: View {
     private func spriteBaselineRows(for building: BuildingType) -> Int {
         switch building.id {
         case "well":     return 9
-        case "farm":     return 10
+        // farm removed from catalog
         case "fence":    return 6   // iso redraw: content rows 9-25, rows 26-31 empty
         case "windmill": return 3
         case "house":    return 4   // iso redraw: content rows 4-27, rows 28-31 empty

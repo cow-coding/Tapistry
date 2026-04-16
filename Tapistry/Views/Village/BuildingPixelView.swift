@@ -816,7 +816,7 @@ struct BuildingPixelView: View {
         case "house":      HousePixelView(size: size)
         case "windmill":   WindmillPixelView(size: size)
         case "well":       WellPixelView(size: size)
-        case "farm":       FarmPixelView(size: size)
+        // farm removed — doesn't fit village concept
         case "shop":       ShopPixelView(size: size)
         case "fence":      PixelSpriteView(art: Sprites.fence, width: size)
         case "lamp":       LampPixelView(size: size)
