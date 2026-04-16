@@ -12,6 +12,19 @@ Tapistry uses **2:1 isometric** projection (a.k.a. dimetric). Every edge on
 the grass block — top-face diamond edges and the side-face top edges — runs
 at slope **±0.5**: 2 screen pixels horizontal per 1 screen pixel vertical.
 
+### Direction naming convention (global)
+
+Use the same direction terms for both a full block cell and a sub-cell.
+
+| Korean term | Canonical edge |
+|---|---|
+| 앞쪽 | 남동쪽변 (SE edge) |
+| 뒤쪽 | 북서쪽변 (NW edge) |
+| 왼쪽 | 남서쪽변 (SW edge) |
+| 오른쪽 | 북동쪽변 (NE edge) |
+
+Do not switch naming by context. One vocabulary only.
+
 | Slope | Direction on screen | Matches block edge |
 |---|---|---|
 | `+0.5` | down-right (or up-left) | SW face top edge (left, lighter brown) |
@@ -258,3 +271,39 @@ When in doubt, go in small steps:
 - Big one-shot rewrites ("fix everything at once") almost always break
   because coupling between wall geometry, roof, door position, and
   baseline offset is tighter than it looks.
+
+---
+
+## 10. 48×48 workflow and rules
+
+Use this when upgrading sprites from 32×32 to 48×48.
+
+### Core principles
+
+- Keep the same **2:1 iso geometry** (`±0.5` edge slopes). Do not
+  redesign perspective from scratch during scale-up.
+- Preserve the approved silhouette first, then add detail in a second pass.
+- Keep iso-native structures (`house`, `shop`, `fence`) at
+  `isoShearY(for:) == 0`.
+
+### Authoring checklist (48×48)
+
+1. Start from the existing approved sprite geometry (ground/top diamonds + peak).
+2. Scale to 48×48 while preserving wall and roof edge slopes.
+3. Add detail only after geometry is stable (roof highlight, window split, door trim).
+4. Validate dimensions:
+   each sprite must have exactly 48 rows, and each row must be 48 chars.
+5. Count trailing empty rows (bottom `.` rows) for baseline compensation.
+6. Update `spriteBaselineRows` in `VillageGridView.swift` using:
+   `round(trailingEmptyRows * 32.0 / 48.0)`.
+7. Build and render in-app; verify:
+   the visual bottom touches the sub-cell anchor,
+   lower/front edges do not float,
+   and only acceptable upper-right overflow exists.
+
+### Practical notes for this codebase
+
+- `subObjectSize` remains based on a 32-reference scale in the current renderer,
+  so 48×48 sprites require explicit baseline conversion.
+- If a new 48×48 sprite appears tilted or bolted on, rollback to the last
+  approved geometry and re-apply detail incrementally.
