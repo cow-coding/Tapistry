@@ -84,12 +84,12 @@ Standard characters used in sprite rows (match keys in the `colors:` dict):
 
 | Char | Meaning | Typical SpriteColors entry |
 |---|---|---|
-| `R` | South roof (brighter) | `roof` |
-| `r` | East roof (shadowed) | `roofDark` |
-| `W` | South wall trim / top edge | `wallDark` |
-| `n` | South wall body | `wall` |
-| `E` | East wall trim / top edge | `plankDark` |
-| `e` | East wall body | `wallDark` |
+| `R` | 앞쪽벽(SE면) roof (brighter) | `roof` |
+| `r` | 왼쪽벽(SW면) roof (shadowed) | `roofDark` |
+| `W` | 앞쪽벽(SE면) wall trim / top edge | `wallDark` |
+| `n` | 앞쪽벽(SE면) wall body | `wall` |
+| `E` | 왼쪽벽(SW면) wall trim / top edge | `plankDark` |
+| `e` | 왼쪽벽(SW면) wall body | `wallDark` |
 | `X` / `x` | Window | `window` / `windowDark` |
 | `D` / `d` / `h` | Door / frame / knob | `door` / `doorLight` / `shopSign` |
 | `C` / `c` | Chimney body / cap shadow | `chimney` / `chimneyDark` |
@@ -97,8 +97,8 @@ Standard characters used in sprite rows (match keys in the `colors:` dict):
 | `P` / `p` | Wood plank / shadow | `plank` / `plankDark` |
 | `.` | Empty / sky | (not rendered) |
 
-Keep south-face brightness > east-face brightness so the SE-camera
-lighting reads naturally (south catches more light, east is in shadow).
+앞쪽벽(SE면) brightness > 왼쪽벽(SW면) brightness로 유지.
+SE 카메라 기준 앞쪽이 밝고 왼쪽이 그림자.
 
 ---
 
@@ -109,20 +109,20 @@ and commit after each step so you can revert cleanly.
 
 1. **Pick the 9 points**. Sketch ground diamond, top diamond, peak on
    graph paper or a throwaway render. Verify every edge is ±0.5.
-2. **Slope the wall bottoms**. South wall base should slope -0.5 from
-   seam to outer-SW; east wall base should slope +0.5 from seam to
+2. **Slope the wall bottoms**. 앞쪽벽(SE면) base should slope -0.5 from
+   seam to outer-SW; 왼쪽벽(SW면) base should slope +0.5 from seam to
    outer-NE.
 3. **Slope the wall tops**. Match the same ±0.5 slopes so the wall
    becomes a proper parallelogram, and both walls share the same
    top-row at the seam.
 4. **Place the peak**. Use the formula above. Draw the single peak
    pixel.
-5. **Fill the roof**. Two triangles (east and south slopes) sharing the
-   peak-to-seam-top edge. East uses `r`, south uses `R`. Let the eave
+5. **Fill the roof**. Two triangles (왼쪽/SW slope and 앞쪽/SE slope) sharing the
+   peak-to-seam-top edge. 왼쪽 uses `r`, 앞쪽 uses `R`. Let the eave
    overhang the wall outer corners if pure triangle geometry leaves
    gaps (a 1–2 column overhang at the eave row is acceptable).
 6. **Fill the walls**. Use `W`/`E` for outer and top trim, `n`/`e` for
-   body. Seam column (col 12 east / col 13 south for our standard) gets
+   body. Seam column (col 12 왼쪽 / col 13 앞쪽 for our standard) gets
    trim on both sides.
 7. **Add door and windows**. Keep them small — at `subObjectSize /
    32 ≈ 0.75pt` per pixel, 3-wide windows and 3-4-wide doors are about
@@ -181,7 +181,7 @@ and commit after each step so you can revert cleanly.
 
 | Sprite | Status | Notes |
 |---|---|---|
-| `house` | iso-native ✓ | Peak (18, 9), chimney cols 10-11 on east roof |
+| `house` | iso-native ✓ | Peak (18, 9), chimney cols 10-11 on 왼쪽(SW) roof |
 | `fence` | iso-native ✓ | Rails slope -0.5, shifted up-right to avoid ground overflow |
 | `tree` | billboard | Stays flat — iso convention for tall elements |
 | `lamp` | billboard | Same as tree |
@@ -307,3 +307,98 @@ Use this when upgrading sprites from 32×32 to 48×48.
   so 48×48 sprites require explicit baseline conversion.
 - If a new 48×48 sprite appears tilted or bolted on, rollback to the last
   approved geometry and re-apply detail incrementally.
+
+---
+
+## 11. 쿼터뷰 관점 원칙
+
+도트를 찍을 때 코드 레이어나 렌더링 로직이 아니라, **카메라에서 보이는 최종
+이미지**를 기준으로 판단한다.
+
+### 핵심 규칙
+
+1. **보이는 그대로 찍는다.** "이 픽셀이 어떤 레이어에 속하는가"가 아니라
+   "쿼터뷰 카메라에서 이 위치에 무엇이 보이는가"로 결정한다.
+2. **바깥에서 본다.** 건물 내부 바닥이나 천장 면은 보이지 않는다. 보이는
+   것은 지붕, 벽, 그리고 벽 위에 얹힌 구조물뿐이다.
+3. **위에 있으면 보인다.** 1층 지붕 위에 2층 박스가 있으면, 지붕 면 위로
+   2층 벽이 자연스럽게 보인다 — "뚫고 내려온" 것이 아니라 위에 있으니까
+   보이는 것이다.
+
+### 다층 건물 (stacked box)
+
+2층 이상 건물은 각 층을 독립적인 iso 박스로 취급한다.
+
+1. **1층 박스를 먼저 완성한다.** 9-point 프레임워크로 ground diamond →
+   walls → top face(지붕). 지붕 색은 건물 컨셉에 맞춘다 (카페 = 초록).
+2. **1층 지붕을 "땅"으로 간주하고**, 그 위에 동일한 원칙으로 2층 박스를
+   그린다. 2층 footprint는 1층보다 작을 수 있다 (setback 구조).
+3. **각 층의 모든 edge는 ±0.5 slope를 따른다.** 층간 경계에서도 예외 없음.
+4. **쿼터뷰로 보이는 대로 합성한다.** 1층 지붕 다이아몬드 위에 2층 벽이
+   겹치면 그대로 2층 벽을 찍는다. 지붕 픽셀을 "보존"할 필요 없다.
+
+### 예시: 카페 (1F 초록지붕 + 2F 소형 박스)
+
+```
+Row 18: ..................EEeeeeeeEnnnnnnnnnn...........  ← 2F 벽 (지붕 아래)
+Row 19: ..................EEeeeeeeEnnnnnnnaaAA..........  ← 2F 벽 + 1F 지붕 시작
+Row 20: ................AAaaeeeeeeEnnnnnnaaaaaaAA.......  ← 1F 지붕 위에 2F 벽 보임
+Row 21: ..........EEeeAAaaaaaannnnEnnnnaaaaaaaaaaAA.....  ← 1F 벽 + 지붕 + 2F seam
+Row 23: ..........AAaaaaaaaaaaaaaaEaaaaaaaaaaAAnnnn.....  ← 1F 지붕 + seam 꼭지
+```
+
+초록(A/a) = 1층 지붕, e/E/n = 2층 벽이 지붕 위에 보이는 것.
+
+---
+
+## 12. 도트 작업 실행 체크리스트 (MANDATORY)
+
+**이 체크리스트는 도트를 찍는 모든 작업에서 반드시 따라야 한다.
+한 항목이라도 건너뛰면 안 된다.**
+
+### Phase 1: 기하학 정의 (피처보다 먼저)
+
+- [ ] **9-point 좌표를 명시적으로 정의한다.**
+  모든 건물에 대해 NW, NE, SW, SE (ground), NW', NE', SW', SE' (top),
+  Peak 좌표를 숫자로 적는다. 다층이면 층별로.
+- [ ] **모든 edge가 ±0.5 slope인지 검증한다.**
+  `Δcol / Δrow = ±2` 또는 vertical(Δcol=0).
+  검증 스크립트를 돌려서 확인. 눈대중 금지.
+- [ ] **각 row의 좌변/우변/seam 위치를 계산한다.**
+  이 값이 피처 배치의 절대 경계가 된다.
+
+### Phase 2: 벽 채우기
+
+- [ ] **골격 내부만 채운다.**
+  Phase 1에서 계산한 경계 안에서만 문자를 배치한다.
+  - 동쪽벽: `좌변 ~ seam` 범위
+  - 남쪽벽: `seam ~ 우변` 범위
+- [ ] **edge slope 재검증한다.** 채운 후에도 ±0.5 유지 확인.
+
+### Phase 3: 피처 추가 (창문, 문, 지붕 디테일)
+
+- [ ] **한 번에 하나의 피처만 추가한다.**
+  창문 → 검증 → 문 → 검증 → 벽돌 → 검증. 한꺼번에 금지.
+- [ ] **피처는 기하학 경계 안에서 기존 문자를 교체하는 방식으로만 넣는다.**
+  `put(row, col, string)` 같은 절대좌표 덮어쓰기 금지.
+  대신: "Row N의 남쪽벽은 col A~B → 그 안의 `n`을 `X`, `D`로 교체".
+- [ ] **교체 후 해당 row의 좌변/우변이 변하지 않았는지 확인한다.**
+  피처가 경계를 밀어내면 안 된다.
+- [ ] **edge slope 재검증한다.**
+
+### Phase 4: 최종 검증
+
+- [ ] 전체 48 rows × 48 chars 확인.
+- [ ] 모든 외곽 edge ±0.5 slope 확인 (L자 단차 점프 제외).
+- [ ] trailing empty rows 세고 `spriteBaselineRows` 계산.
+- [ ] 이미지 렌더링해서 쿼터뷰에서 자연스러운지 눈으로 확인.
+- [ ] `isoShearY` = 0 설정 확인.
+
+### 위반 시 대응
+
+피처 추가 중 edge slope가 깨지면:
+1. 해당 피처를 **즉시 revert**한다.
+2. 경계를 다시 확인한다.
+3. 경계 안에 맞게 피처를 축소/조정한 뒤 재시도한다.
+
+**절대로 "피처가 좀 삐져나왔지만 괜찮겠지"로 넘어가지 않는다.**

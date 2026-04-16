@@ -209,6 +209,7 @@ struct VillageTileView: View {
         case "fence":    return 6   // iso redraw: content rows 9-25, rows 26-31 empty
         case "windmill": return 3
         case "house":    return 4   // 48×48 sprite: 6 empty trailing rows × (32/48) = 4
+        case "cafe":     return 7   // 48×48 sprite: 11 empty trailing rows × (32/48) ≈ 7
         case "shop":     return 4   // 48×48 sprite: 6 empty rows × (32/48) scale = 4
         case "tree":       return 12  // 48×48 sprite: 18 empty trailing rows × (32/48) = 12
         case "street_tree": return 13 // 48×48 sprite: 19 empty trailing rows × (32/48) ≈ 13
@@ -231,10 +232,10 @@ struct VillageTileView: View {
             return 0
         case "flowers", "stone_path":
             return 0
-        case "house", "fence", "shop":
+        case "house", "fence", "shop", "cafe":
             return 0          // iso perspective already in the sprite pixels
         default:
-            return -0.5       // south face visible — top-right corner rises to match left diamond edge
+            return -0.5       // 앞쪽벽(SE면) visible — top-right corner rises to match left diamond edge
         }
     }
 
@@ -273,10 +274,10 @@ struct VillageTileView: View {
 
             // Sub-cell contents — objects and decorations painted back-to-front.
             //
-            // Structures get a negative Y-shear (b = -0.5) so their front/south face
+            // Structures get a negative Y-shear (b = -0.5) so their 앞쪽벽(SE면)
             // is visible to the SE-looking camera. A hard-edged shadow offset to the
-            // right (+x) and slightly down (+y) along the iso east slope simulates the
-            // east/right wall of the building, giving genuine 3-D depth perception.
+            // right (+x) and slightly down (+y) simulates the 왼쪽벽(SW면) depth,
+            // giving genuine 3-D depth perception.
             //
             // Billboards (tree, lamp) stay upright — iso convention for tall elements.
             // Ground layers are already diamond-clipped.
@@ -288,7 +289,7 @@ struct VillageTileView: View {
                     .transformEffect(
                         CGAffineTransform(a: 1, b: shear, c: 0, d: 1, tx: 0, ty: 0)
                     )
-                    // East-face depth: hard shadow offset along the iso +0.5 east slope.
+                    // 왼쪽벽(SW면) depth: hard shadow offset along the iso slope.
                     // Only applied to structures (shear != 0); billboards and ground omit it.
                     .shadow(
                         color: shear != 0 ? Color(white: 0.12).opacity(0.50) : .clear,

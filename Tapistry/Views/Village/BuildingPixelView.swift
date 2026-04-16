@@ -584,9 +584,9 @@ private enum Sprites {
             "A": SpriteColors.shopAwning,     // red perimeter trim
             "K": SpriteColors.plankDark,      // brown sign background
             "b": SpriteColors.plank,          // lighter "text" dots on sign
-            "E": SpriteColors.stoneDark,      // east wall trim (cool gray)
-            "e": SpriteColors.stone,          // east wall body
-            "W": SpriteColors.wallDark,       // south wall base trim
+            "E": SpriteColors.stoneDark,      // 왼쪽벽(SW면) trim (cool gray)
+            "e": SpriteColors.stone,          // 왼쪽벽(SW면) body
+            "W": SpriteColors.wallDark,       // 앞쪽벽(SE면) base trim
             "n": SpriteColors.wallLight,      // cream columns + base
             "X": SpriteColors.windowDark,     // blue glass panels
             "D": SpriteColors.door,           // door frame
