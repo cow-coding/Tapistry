@@ -26,8 +26,8 @@ jobs:
       - name: Build
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          xcodebuild -project CapCha.xcodeproj \
-            -scheme CapCha \
+          xcodebuild -project Tapistry.xcodeproj \
+            -scheme Tapistry \
             -configuration Release \
             -derivedDataPath build \
             CODE_SIGN_IDENTITY="-" \
@@ -35,16 +35,16 @@ jobs:
 
       - name: Create DMG
         run: |
-          APP_PATH="build/Build/Products/Release/CapCha.app"
-          DMG_NAME="CapCha-${GITHUB_REF_NAME}.dmg"
+          APP_PATH="build/Build/Products/Release/Tapistry.app"
+          DMG_NAME="Tapistry-${GITHUB_REF_NAME}.dmg"
 
           create-dmg \
-            --volname "CapCha" \
+            --volname "Tapistry" \
             --background "installer/dmg_background.png" \
             --window-pos 200 120 \
             --window-size 660 400 \
             --icon-size 120 \
-            --icon "CapCha.app" 490 180 \
+            --icon "Tapistry.app" 490 180 \
             --app-drop-link 170 180 \
             --no-internet-enable \
             "$DMG_NAME" \
@@ -58,14 +58,14 @@ jobs:
           files: ${{ env.DMG_NAME }}
           generate_release_notes: true
           body: |
-            ## CapCha ${{ github.ref_name }}
+            ## Tapistry ${{ github.ref_name }}
 
-            macOS menu bar app — type to collect keycaps!
+            macOS menu bar app — type to weave a tiny isometric village.
 
             ### Install
-            1. Download `CapCha-${{ github.ref_name }}.dmg`
-            2. Open the DMG and drag **CapCha** to **Applications**
-            3. Open **CapCha** — macOS will show an "unidentified developer" warning
+            1. Download `Tapistry-${{ github.ref_name }}.dmg`
+            2. Open the DMG and drag **Tapistry** to **Applications**
+            3. Open **Tapistry** — macOS will show an "unidentified developer" warning
             4. Go to **System Settings → Privacy & Security** and click **Open Anyway**
             5. Grant **Input Monitoring** permission when prompted
 
