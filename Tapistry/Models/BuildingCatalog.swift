@@ -54,7 +54,7 @@ struct BuildingRenderSpec {
         "cityhall": .init(kind: .cityhall, baselineRows32: 4, isoShearY: 0, anchorStyle: .structure, emojiScale: 0.6),
         "hotel": .init(kind: .hotel, baselineRows32: -5, isoShearY: 0, anchorStyle: .structure, emojiScale: 0.6),
         "skyscraper": .init(kind: .skyscraper, baselineRows32: -16, isoShearY: 0, anchorStyle: .structure, emojiScale: 0.6),
-        "windmill": .init(kind: .windmill, baselineRows32: 3, isoShearY: -0.5, anchorStyle: .structure, emojiScale: 0.8),
+        "windmill": .init(kind: .windmill, baselineRows32: 4, isoShearY: 0, anchorStyle: .structure, emojiScale: 0.8),
 
         // Decoration
         "tree": .init(kind: .tree, baselineRows32: 12, isoShearY: 0, anchorStyle: .centered, emojiScale: 0.8),
