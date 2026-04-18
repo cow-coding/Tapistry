@@ -9,6 +9,7 @@ struct MenuBarContentView: View {
 
     @State private var isSettingsHovering = false
     @State private var isQuitHovering = false
+    @State private var showSellAllAlert = false
 
     private var lang: AppLanguage { settings.language }
 
@@ -109,9 +110,64 @@ struct MenuBarContentView: View {
             Text("\(appState.todayKeystrokeCount) \(L10n.todayLabel.resolve(lang))")
                 .font(.system(size: 9, weight: .medium, design: .monospaced))
                 .foregroundColor(.secondary)
+
+            if potentialRefund > 0 {
+                Button {
+                    showSellAllAlert = true
+                } label: {
+                    HStack(spacing: 3) {
+                        Image(systemName: "trash")
+                            .font(.system(size: 9))
+                        Text("+\(potentialRefund)💰")
+                            .font(.system(size: 9, weight: .semibold, design: .rounded))
+                    }
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(Color.red.opacity(0.15))
+                    )
+                    .foregroundColor(.red)
+                }
+                .buttonStyle(.plain)
+                .alert("마을 전체 판매", isPresented: $showSellAllAlert) {
+                    Button("취소", role: .cancel) {}
+                    Button("판매", role: .destructive) {
+                        village.sellAll()
+                    }
+                } message: {
+                    Text("설치한 모든 건물·지면을 제거하고 50% 환불받습니다 (+\(potentialRefund)💰).")
+                }
+            }
         }
         .padding(.horizontal, 16)
         .padding(.bottom, 6)
+    }
+
+    /// Sum of 50% refunds for every placed element. Shown next to the
+    /// sell-all button so the user sees the reward before committing.
+    private var potentialRefund: Int {
+        var total = 0
+        for r in 0..<village.gridSize {
+            for c in 0..<village.gridSize {
+                let tile = village.grid[r][c]
+                if let gid = tile.ground, let b = BuildingCatalog.find(gid) {
+                    total += b.price / 2
+                }
+                for sr in 0..<VillageTile.subGridSize {
+                    for sc in 0..<VillageTile.subGridSize {
+                        let cell = tile.subCells[sr][sc]
+                        if let oid = cell.object, let b = BuildingCatalog.find(oid) {
+                            total += b.price / 2
+                        }
+                        if let did = cell.decoration, let b = BuildingCatalog.find(did) {
+                            total += b.price / 2
+                        }
+                    }
+                }
+            }
+        }
+        return total
     }
 
     private var permissionBanner: some View {

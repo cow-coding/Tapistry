@@ -176,6 +176,39 @@ final class VillageState: ObservableObject {
         scheduleSave()
     }
 
+    /// Sell every placed element across the village at 50% refund.
+    /// Returns the total cash refunded so the caller can surface it in UI.
+    @discardableResult
+    func sellAll() -> Int {
+        var refund = 0
+        for r in 0..<gridSize {
+            for c in 0..<gridSize {
+                if let gid = grid[r][c].ground, let b = BuildingCatalog.find(gid) {
+                    refund += b.price / 2
+                    grid[r][c].ground = nil
+                }
+                for sr in 0..<VillageTile.subGridSize {
+                    for sc in 0..<VillageTile.subGridSize {
+                        let cell = grid[r][c].subCells[sr][sc]
+                        if let oid = cell.object, let b = BuildingCatalog.find(oid) {
+                            refund += b.price / 2
+                            grid[r][c].subCells[sr][sc].object = nil
+                        }
+                        if let did = cell.decoration, let b = BuildingCatalog.find(did) {
+                            refund += b.price / 2
+                            grid[r][c].subCells[sr][sc].decoration = nil
+                        }
+                    }
+                }
+            }
+        }
+        if refund > 0 {
+            addCash(refund)
+        }
+        scheduleSave()
+        return refund
+    }
+
     /// Replace a whole tile (used by the tile editor "Cancel" to restore a snapshot).
     func replaceTile(_ tile: VillageTile, row: Int, col: Int) {
         guard isValidTile(row: row, col: col) else { return }
