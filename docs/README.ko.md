@@ -18,6 +18,10 @@
   <a href="../README.md">English</a> · <a href="pivot-context.md">제품 문맥</a> · <a href="iso-pixel-art-guide.md">아이소 픽셀아트 가이드</a>
 </p>
 
+<p align="center"><em>짧은 데모 — 메뉴바 팝오버를 열고, 타이핑으로 XP를 쌓고, 4×4 마을에 건물을 배치하는 흐름.</em></p>
+
+https://github.com/user-attachments/assets/a9640a85-c408-45f0-b3b0-a14a6078236d
+
 ---
 
 ## Tapistry란?

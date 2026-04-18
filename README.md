@@ -18,6 +18,10 @@
   <a href="docs/README.ko.md">한국어</a> · <a href="docs/pivot-context.md">Product Context</a> · <a href="docs/iso-pixel-art-guide.md">Iso Pixel Art Guide</a>
 </p>
 
+<p align="center"><em>Short demo — opening the menu bar popover, earning XP from typing, and placing buildings into the 4×4 village.</em></p>
+
+https://github.com/user-attachments/assets/a9640a85-c408-45f0-b3b0-a14a6078236d
+
 ---
 
 ## What is Tapistry?
