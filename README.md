@@ -18,9 +18,7 @@
   <a href="docs/README.ko.md">한국어</a> · <a href="docs/pivot-context.md">Product Context</a> · <a href="docs/iso-pixel-art-guide.md">Iso Pixel Art Guide</a>
 </p>
 
-<p align="center"><em>Short demo — opening the menu bar popover, earning XP from typing, and placing buildings into the 4×4 village.</em></p>
-
-https://github.com/user-attachments/assets/a9640a85-c408-45f0-b3b0-a14a6078236d
+https://github.com/user-attachments/assets/95f25153-f32f-453e-8181-6663cacb54d4
 
 ---
 
@@ -128,22 +126,6 @@ If you are replacing an older build, remove the previous Tapistry entry from Inp
 | **Reactive** | Combine |
 | **Persistence** | JSON in Application Support |
 | **Project Generation** | XcodeGen |
-
-## Documentation
-
-| | |
-|:--|:--|
-| [docs/README.ko.md](docs/README.ko.md) | Korean product overview |
-| [docs/pivot-context.md](docs/pivot-context.md) | Current Tapistry product and implementation context |
-| [docs/iso-pixel-art-guide.md](docs/iso-pixel-art-guide.md) | Iso sprite workflow and rendering rules |
-| [DESIGN.md](DESIGN.md) | Legacy CapCha design document (Korean) |
-| [docs/DESIGN.en.md](docs/DESIGN.en.md) | Legacy CapCha design document (English) |
-
-## Current Focus
-
-- Polish late-game building sprites so the full unlock path matches the early-game pixel-art quality.
-- Keep the Tapistry documentation aligned with the actual app instead of the older CapCha concept.
-- Continue refining onboarding and village-building clarity while preserving the privacy-first typing loop.
 
 ## License
 

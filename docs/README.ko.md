@@ -18,9 +18,7 @@
   <a href="../README.md">English</a> · <a href="pivot-context.md">제품 문맥</a> · <a href="iso-pixel-art-guide.md">아이소 픽셀아트 가이드</a>
 </p>
 
-<p align="center"><em>짧은 데모 — 메뉴바 팝오버를 열고, 타이핑으로 XP를 쌓고, 4×4 마을에 건물을 배치하는 흐름.</em></p>
-
-https://github.com/user-attachments/assets/a9640a85-c408-45f0-b3b0-a14a6078236d
+https://github.com/user-attachments/assets/95f25153-f32f-453e-8181-6663cacb54d4
 
 ---
 
@@ -128,22 +126,6 @@ macOS가 처음 실행을 차단할 수 있습니다:
 | **리액티브** | Combine |
 | **저장** | Application Support 기반 JSON |
 | **프로젝트 생성** | XcodeGen |
-
-## 문서
-
-| | |
-|:--|:--|
-| [../README.md](../README.md) | 영문 제품 소개 |
-| [pivot-context.md](pivot-context.md) | 현재 Tapistry 제품/구현 문맥 |
-| [iso-pixel-art-guide.md](iso-pixel-art-guide.md) | 아이소 스프라이트 제작 규칙 |
-| [../DESIGN.md](../DESIGN.md) | 레거시 CapCha 설계 문서 (KR) |
-| [DESIGN.en.md](DESIGN.en.md) | 레거시 CapCha 설계 문서 (EN) |
-
-## 현재 집중 작업
-
-- 후반 해금 건물의 픽셀아트 퀄리티를 초반 건물 수준으로 맞추는 작업
-- Tapistry 기준의 현재 문서와 실제 앱 상태를 계속 일치시키는 작업
-- 프라이버시 중심의 타이핑 루프를 유지하면서 온보딩과 빌드 경험을 다듬는 작업
 
 ## 라이선스
 
