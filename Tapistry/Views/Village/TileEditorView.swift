@@ -23,6 +23,13 @@ struct TileEditorView: View {
 
     /// Enlarged block size for the editor preview. Matches the popover width roughly.
     private let editorBlockSize: CGFloat = 200
+    /// Preview frame height — intentionally tall so skyscraper-class sprites
+    /// have room to render upward above the tile block.
+    private var previewFrameHeight: CGFloat { editorBlockSize * 2.5 }
+    /// How much the preview frame extends BELOW its layout box via negative
+    /// bottom padding. This keeps the tile anchored low in the popover while
+    /// still giving tall sprites the vertical rendering space they need.
+    private let previewOverflow: CGFloat = 170
 
     private var tile: VillageTile { village.grid[row][col] }
 
@@ -32,6 +39,7 @@ struct TileEditorView: View {
             groundRow
             Divider()
             previewArea
+                .padding(.bottom, -previewOverflow)
             Divider()
             subCellCaption
             layerTabs
@@ -146,10 +154,15 @@ struct TileEditorView: View {
                 selectedSubCell: selectedSub,
                 onSubCellTap: { sr, sc in selectedSub = (sr, sc) }
             )
+            // Frame is tall enough to fit the tallest sprites (skyscraper)
+            // extending above the tile block. Bottom alignment keeps the
+            // tile anchored so short buildings don't float.
             .frame(
                 width: editorBlockSize,
-                height: editorBlockSize * 0.75 + 8
+                height: previewFrameHeight,
+                alignment: .bottom
             )
+            .clipped()
             .background(
                 // Tap outside the diamond to deselect sub-cell
                 Color.clear
@@ -264,7 +277,7 @@ struct TileEditorView: View {
                             }
                         } label: {
                             paletteCell(content: {
-                                BuildingPixelView(building: b, size: 28)
+                                BuildingPixelView(building: b, size: b.thumbnailSize(maxDim: 28))
                                     .frame(width: 28, height: 28)
                                     .opacity(canAfford ? 1.0 : 0.4)
                             }, label: b.name.resolve(lang), price: b.price, canAfford: canAfford, isSelected: currentId == b.id, isRemove: false)

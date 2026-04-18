@@ -119,10 +119,13 @@ struct VillageGridView: View {
                 height: blockH + stepY * CGFloat(village.gridSize * 2)
             )
         }
-        .popover(isPresented: Binding(
-            get: { selectedCell != nil },
-            set: { if !$0 { selectedCell = nil } }
-        )) {
+        .popover(
+            isPresented: Binding(
+                get: { selectedCell != nil },
+                set: { if !$0 { selectedCell = nil } }
+            ),
+            arrowEdge: .leading  // popover opens to the right of the menu
+        ) {
             if let (row, col) = selectedCell {
                 TileEditorView(
                     village: village,

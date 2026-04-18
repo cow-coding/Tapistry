@@ -83,11 +83,30 @@ struct BuildingRenderSpec {
             return CGSize(width: blockSize / 32, height: blockSize / 10)
         }
     }
+
+    /// Width / height ratio of the underlying sprite. Most sprites are
+    /// square (48×48) but taller towers use 48×64, 48×73, 48×96 etc.
+    /// Used by palette thumbnails to keep tall buildings inside their card.
+    var spriteAspectRatio: CGFloat {
+        switch kind {
+        case .apartment:  return 48.0 / 73.0
+        case .skyscraper: return 48.0 / 96.0
+        default:          return 1.0
+        }
+    }
 }
 
 extension BuildingType {
     var renderSpec: BuildingRenderSpec {
         BuildingRenderSpec.byID[id] ?? BuildingRenderSpec.fallback(for: self)
+    }
+
+    /// Sprite width used when rendering a thumbnail that must fit within a
+    /// `maxDim × maxDim` card. Shrinks the width for tall sprites so their
+    /// rendered height doesn't overflow the card.
+    func thumbnailSize(maxDim: CGFloat) -> CGFloat {
+        let ar = renderSpec.spriteAspectRatio
+        return ar >= 1.0 ? maxDim : maxDim * ar
     }
 }
 
